@@ -1,0 +1,13 @@
+#splash-screen {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    
+}
+.title-text {
+    padding: 50px;
+    font-size: 3.5em;
+}
+
