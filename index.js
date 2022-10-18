@@ -1,5 +1,6 @@
 // Create the canvas
 const canvas = document.querySelector("#canvas");
+canvas.style.border = "5px solid pink"
 const canvasDiv = document.querySelector("#game");
 const ctx = canvas.getContext("2d");
 
@@ -14,13 +15,20 @@ let gameOverDiv = document.querySelector("#game-over");
 let winGame = document.querySelector("#win-game");
 
 
+
+//sounds
+const splashSong = new Audio("/sounds/Start song One Summer's Day.mp3");
+const gameSong = new Audio('/sounds/Soot balls Spirited Away - Joe Hisaishi.mp3');
+const gameOverSong = new Audio ("/sounds/The Bottomless Pit - Joe Hisaishi.mp3");
+const winGameSong = new Audio("/sounds/Joe Hisaishi - Always With Me (Spirited Away 2002).mp3");
+
 // images used
 const background = new Image()
 background.src = "/images/game background copy .jpg"
 const background2 = new Image()
 background2.src = "/images/game background copy2.jpg"
 const gameOverScreen = new Image()
-gameOverScreen.src = "/images/gameover-picture.jpeg";
+gameOverScreen.src = "/images/game-over.jpg";
 const winningScreen = new Image()
 winningScreen.src = "/images/splash-picture.jpg";
 const chihiroImage = new Image()
@@ -47,7 +55,7 @@ let isGameOver = false;
 let gameId = 0;
 let invisibilityTimerLeft = 10;
 let winningTimer= 0;
-let timeLeft = 120;
+let timeLeft = 2;
 let bgx = 0
 let bgx2 = canvas.width
 let spiritFrequency;
@@ -83,8 +91,8 @@ let specialRemove = -5
 
 
 
-
-
+splashSong.play();
+canvas.style.display = "none"
 gameOverDiv.style.display = "none";
   winGame.style.display = "none";
 
@@ -173,25 +181,23 @@ let drawTime = () => {
   ctx.font = "30px sans-serif";
   ctx.fillText(`Time left to win: ${timeLeft}s `, 200, 70);
 }
+
+
+startTimer = () => {
+  intervalId = setInterval(() => {
+    timeLeft -= 1;
+    if (timeLeft <= 0) {
+    }
+  }, 1000)
+}
+
   invisivilityTimer = () => {
    intervalId = setInterval(() => {
     invisibilityTimerLeft -= 1;
-    if (invisibilityTimerLeft <= 0) {
-      gameOver();
-      cancelAnimationFrame(gameId);
+    if (invisibilityTimerLeft === 0) {
     }
    }, 1000)
     
-  }
-
-  startTimer = () => {
-    intervalId = setInterval(() => {
-      timeLeft -= 1;
-      if (timeLeft <= 0) {
-        winningGame();
-        cancelAnimationFrame(gameId)
-      }
-    }, 1000)
   }
 
 
@@ -207,13 +213,99 @@ const winningGame = () => {
   gameOverDiv.style.display = "none";
   canvasDiv.style.display = "none";
   restartBtn.style.display = "center"
+  gameSong.pause();
+  winGameSong.play();
+  cancelAnimationFrame(gameId)
 }
 
 const gameOver =  () => {
   gameOverDiv.style.display = "flex";
   canvasDiv.style.display = "none";
   restartBtn.style.display = "center"
+  gameSong.pause()
+  gameOverSong.play()
+  cancelAnimationFrame(gameId)
+  
 
+}
+
+const addSpirits = () => {
+  const nextSpirits = spirits.filter( spirit => spirit.x < canvas.width)
+
+
+  if (gameId % 100 === 0) {
+      nextSpirits.push(new SpiritsClass())
+  }
+  
+  nextSpirits.forEach(spirit => {
+     drawSpirits(spirit.x, spirit.y)
+      spirit.move()
+  
+  if (
+    spirit.x + 10 <= chihiroX + chihiroWidth  &&
+    spirit.x  - 20 + spiritWidth >= chihiroX &&
+    spirit.y + 150 <= chihiroY + chihiroHeight &&
+    spirit.y - 30 + spiritHeight  > chihiroY
+  ) {console.log("Game Over");
+     gameOver();
+     
+  }
+      
+  }) 
+  
+  spirits = nextSpirits;
+}
+
+const addFood = () => {
+  const nextFoods = foods.filter( food => food.x < canvas.width)
+
+
+  if (gameId % 300 === 0) {
+      nextFoods.push(new FoodsClass())
+  }
+  
+  nextFoods.forEach(food => {
+     drawFood(food.x, food.y)
+      food.move()
+  
+      if (
+        food.x + 10 <= chihiroX + chihiroWidth  &&
+        food.x  - 20 + foodWidth >= chihiroX &&
+        food.y + 150 <= chihiroY + chihiroHeight &&
+        food.y - 30 + foodHeight  > chihiroY
+      ) {
+       invisibilityTimerLeft += 5;
+    }
+      
+  }) 
+  
+  foods = nextFoods;
+}
+
+const addSpecial = () => {
+  const nextSpecials = specialFoods.filter( special => special.x < canvas.width)
+
+
+  if (gameId % 500 === 0) {
+      nextSpecials.push(new SpecialsClass());
+  }
+  
+  nextSpecials.forEach(special => {
+     drawSpecialFood(special.x, special.y)
+      special.move()
+  
+      /* if (
+        special.x + 10 <= chihiroX + chihiroWidth  &&
+        speccial.x  - 20 + specialWidth >= chihiroX &&
+        special.y + 150 <= chihiroY + chihiroHeight &&
+        special.y - 30 + specialHeight  > chihiroY
+      ) {
+        requestAnimationFrame(animate)
+      } */
+      
+  }) 
+  
+  specialFoods = nextSpecials;
 }
 
 const animate = () => {
@@ -222,91 +314,18 @@ drawTime()
 drawInvisivility();
 drawChihiro();
 movePlayer();
-
-
-const nextSpirits = spirits.filter( spirit => spirit.x < canvas.width)
-
-
-if (gameId % 100 === 0) {
-    nextSpirits.push(new SpiritsClass())
-}
-
-nextSpirits.forEach(spirit => {
-   drawSpirits(spirit.x, spirit.y)
-    spirit.move()
-
-if (
-  spirit.x + 10 <= chihiroX + chihiroWidth  &&
-  spirit.x  - 20 + spiritWidth >= chihiroX &&
-  spirit.y + 150 <= chihiroY + chihiroHeight &&
-  spirit.y - 30 + spiritHeight  > chihiroY
-) {console.log("Game Over");
-   gameOver();
-   cancelAnimationFrame(gameId)
-}
-    
-}) 
-
-spirits = nextSpirits;
-
-////
-
-const nextFoods = foods.filter( food => food.x < canvas.width)
-
-
-if (gameId % 300 === 0) {
-    nextFoods.push(new FoodsClass())
-}
-
-nextFoods.forEach(food => {
-   drawFood(food.x, food.y)
-    food.move()
-
-   /* if (
-      food.x + 10 <= chihiroX + chihiroWidth  &&
-      food.x  - 20 + foodWidth >= chihiroX &&
-      food.y + 150 <= chihiroY + chihiroHeight &&
-      food.y - 30 + foodHeight  > chihiroY
-    ) {
-    requestAnimationFrame(animate)
-  } */
-    
-}) 
-
-foods = nextFoods;
-
-
-//////
-
-const nextSpecials = specialFoods.filter( special => special.x < canvas.width)
-
-
-if (gameId % 500 === 0) {
-    nextSpecials.push(new SpecialsClass());
-}
-
-nextSpecials.forEach(special => {
-   drawSpecialFood(special.x, special.y)
-    special.move()
-
-    /* if (
-      special.x + 10 <= chihiroX + chihiroWidth  &&
-      speccial.x  - 20 + specialWidth >= chihiroX &&
-      special.y + 150 <= chihiroY + chihiroHeight &&
-      special.y - 30 + specialHeight  > chihiroY
-    ) {
-      requestAnimationFrame(animate)
-    } */
-    
-}) 
-
-specialFoods = nextSpecials;
+addSpirits()
+addFood()
+addSpecial()
 
 
 
 
-
-if (isGameOver) {
+if (timeLeft === 0) {
+    winningGame()
+    cancelAnimationFrame(gameId)
+  } else if (invisibilityTimerLeft === 0) {
+    gameOver()
     cancelAnimationFrame(gameId)
   } else {
     gameId = requestAnimationFrame(animate)
@@ -320,6 +339,8 @@ window.onload = () => {
     }
 
 function startGame() {
+  splashSong.pause();
+  gameSong.play();
 startScreen.style.display = "none";
 canvasDiv.style.display = "flex";
 canvas.style.display = "block";
@@ -333,7 +354,7 @@ winGame.style.display = "none";
  animate();
  startTimer();
  invisivilityTimer();
- //audio.play
+
 document.addEventListener('keydown', event => {
     if (event.code === 'ArrowUp') {
       console.log('We are going up!')
