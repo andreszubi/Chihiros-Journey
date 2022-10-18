@@ -1,13 +1,89 @@
+
 #splash-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items:center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-image: url(./images/splash2-picture.jpeg);
+   background-repeat: no-repeat;
+   background-position: center;
+  background-size: cover;
+  height: 800px;
+    color: white;
+    text-shadow: #020819 3px 12px 5px;
+    line-height: 35px;
+}
+
+#game-over {
+  background-image: url(/images/game-over.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1400px;
+  height: 800px;
+  display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items:center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1.8em;
+    color: white;
+    text-shadow: 5px 12px 5px rgb(32, 32, 43);
+    text-align: center;
+}
+
+#win-game {
+  background-image: url(/images/splash-picture.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1400px;
+  height: 800px;
+  display: flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items:center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1.6em;
+    color: white;
+    text-shadow: 5px 12px 5px rgb(32, 32, 43);
+    text-align: center;
+
+
+}
+
+
+
+.title-text {
+    position: absolute;
+    width: 100%;
+    color: white;
+    margin-top: 0%;
+    font-size: 120px;
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-shadow: 3px 12px 5px rgb(32, 32, 43);
+  }
+  h2 {
+    padding-top: 50px;
+  }
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-around;
+    align-items:flex-start;
+    color: white;
+    padding-top: 150px;
+    size: 200px;
+}
+
+#game {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    
-    
 }
-.title-text {
-    padding: 50px;
-    font-size: 3.5em;
+
+body {
+    background-color: red;
 }
 

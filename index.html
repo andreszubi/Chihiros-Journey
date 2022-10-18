@@ -8,41 +8,50 @@
     <title>Chihiro's Journey</title>
   </head>
 
-  <body>
-    <header id="splash-screen" ><h1 class="title-text">Chihiro's Journey</h1></header>
-    <div id="splash-screen">
-       
-    <img src="/images/splash2-picture.jpeg" alt="Chihiro's Journey Start Screen">
-    <br>
+  <body >
+    <h1 class="title-text">Chihiro's Journey</h1>
+<div id="splash-screen">
     <h2>Instructions</h2>
-    <p>Chihiro has gotten lost in the spirit world and she must make her way back home! <br>
-    In order for Chihiro to survive this journey she must eat food from the spirit realm <br>
-    By eating this food it allows her to remain invisible to the spirits and she cannot be seen <br>
+    <h3>Chihiro has gotten lost in the spirit world and she must make her way back home! <br>
+    She must eat food to stay invisible while crossing the bridge <br>
     She must get across the bridge safely by avoiding the spirits and eating food along the way <br>
-    If she succesfully crosses the bridge without been detected Chihiro will be safe from harm <br>
     There is a timer that will show how long it will take her to get to the end <br>
     However, there are some special foods which will drop from time to time which will take <br>
-    Time away from the timer, which by doing so it will help you win the game faster. <br>
+    Time away from the timer, making you win the game faster <br>
     <br>
-    You may use the left and the right arrow keys on your keyboard in order to make Chihiro move.</p>
+    You may use the up and the down arrow keys on your keyboard in order to make Chihiro move.</p>
 
-    <p></p>
-    <button id="start-button">Start Game</button>
-
-
-
-
+    <div class="buttons">
+      <button id="start-button">Start Game</button>
+      <button id="sound">Sound</button>
+      <button id="mute">Mute</button>
+  
     </div>
+ </div>   
+
+    
+
+    
 
 
 
     <div id="game">
-
-        <canvas id="canvas"></canvas>
+        <canvas id="canvas" width="1400" height="800" ></canvas>
     </div>
 
 
+    <div id="game-over">
+      <h1>Oh no! You have been caught by the spirits and they are ready to feast on you!</h1>
+    </div>
 
-<script type="text/javascript" src="/index.js"></script>
+    <div id="win-game">
+      <h2>Congratulations! you have survived been eaten by the spirits!</h1>
+      <h3>Player score: <p>secs</p></h3>
+      <button id="restart">Restart</button>
+
+    </div>
+
+
+<script src="index.js"></script>
   </body>
 </html>  
