@@ -61,7 +61,7 @@ let gameId = 0;
 let invisibilityTimerLeft = 15;
 let winningTime = ""
 let winningTimer= 0;
-let timeLeft = 120;
+let timeLeft = 20;
 let bgx = 0
 let bgx2 = canvas.width
 let specialFrequency;
@@ -90,7 +90,7 @@ let foodWidth = 50;
 let foodHeight = 60;
 let foodX = 1400;
 let foodY = 280
-let foodInvisivility = 5
+
 
 
 let specialFoods = [];
@@ -98,7 +98,7 @@ let specialWidth = 50;
 let specialHeight = 60;
 let specialX = 1400
 let specialY = 280
-let specialRemove = -5
+
 
 
 
@@ -327,7 +327,7 @@ const addSpirits = () => {
   spirits = nextSpirits;
 }
 
-const addRaddishSpirits = () => {
+const addRadishSpirits = () => {
   const nextRadishSpirits = radishSpirits.filter( radishSpirit => radishSpirit.x < canvas.width && radishSpirit.y > 170 && radishSpirit.y < 750)
 
 
@@ -415,7 +415,7 @@ drawInvisivility();
 drawChihiro();
 movePlayer();
 addSpirits()
-addRaddishSpirits()
+addRadishSpirits()
 addFood()
 addSpecial()
 console.log(winningTime);
@@ -463,6 +463,8 @@ winGame.style.display = "none";
  score.innerHTML = `Your winning time is : ${winningTime} seconds!`
 
 
+
+
 document.addEventListener('keydown', event => {
     if (event.code === 'ArrowUp') {
       isMovingUp = true;
@@ -480,6 +482,7 @@ document.addEventListener('keydown', event => {
     isMovingRight = false;
     isMovingLeft = false;
   })
+
 }
 
 
@@ -523,10 +526,10 @@ window.addEventListener("load", () => {
     pauseBtn.addEventListener("click", () => {
     if (pauseBtn.innerHTML == "Pause") {
       pauseBtn.innerHTML == "Resume"
-      animate.pause()
+      //cancelAnimationFrame(startGame())
     } else {
       pauseBtn.innerHTML == "Pause"
-      animate.play()
+      //requestAnimationFrame(startGame())
     }
     })
 });

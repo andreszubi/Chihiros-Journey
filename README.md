@@ -1,34 +1,69 @@
-Project's name
-Click here to see deployed game
+Chihiros' Journey is a game based of the animated film called "Spirited Away.
+In this game, your objective is to get accross the bridge safely without colliding
+into any of the spirits along your way, or else you will lose the game. You will also have to eat the food that comes along the way so that your character remains invisible to the spirits, which you will have a timer on your screen to keep track of, or else if your invisibility ends you will lose the game. There is also food which takes time away from your winning time which allows you to safely cross the bridge. Once the winning timer runs out , you win the game and you helped Chihiro get back home safely with her parents.
 
-Description
-Brief description of the project
+MVP(DOM - CANVAS)
 
-MVP
-MVP definition here, list of minimum features
+Chihiro needs to move around to avoid the spirits and to eat the foods heading her way.
+Two different types of spirits will be heading towards the player's way.
+If you collide with any of them, then you lose.
+
 
 Backlog
-List of features you might implement after the MVP
 
-Data structure
-List of classes and methods
+Add Scoreboard.
+Have multiple songs in the game.
+Restart after you lose.
+Add a pause game button.
 
-States y States Transitions
-List of states (views) of your game
+Data Structure
+
+Index.js
+splashScreen()
+gameReset()
+drawChihiro()
+movePlayer()
+class SpiritsClass
+class RadishSpiritsClass
+class FoodsClass
+class SpecialsClass
+drawSpirits()
+drawRadishSpirits()
+drawFood()
+drawSpecialFood()
+backgroundDraw()
+drawTime()
+timeElapsed()
+startTimer()
+invisivilityTimer()
+drawInvisivility()
+winningGame()
+gameOver()
+addSpirits()
+addRadishSpirits()
+addFoods()
+addSpecial()
+animate()
+startGame()
+Event Listeners
+
+
+Splash Screen
+Game Screen
+Game Over Screen
+Winning Screen
 
 Task
-List of tasks in order of priority
 
+Create HTML
+Create js
+create CSS
+Create Background
+Create Chihiro
+Create obstacles
+Move obstacles
+Create foods and make them move
+Collision interactions between the player,  spirits and food.
+Add to Invisibility timer food
+Remove time from winning time by consuming special food.
 
-
-
-Spirited Away theme 
-
-Crossing through the bridge
-Avoid collision into the spirits
-Eat food from this world to remain invisible, or else you will become visible to the spirts
-Certain special foods make the timer to win shorter
-If invisibility runs out or you collide with spirit, you lose
-You win after a set amount of time has passed and you finished crossing over the bridge
-
-Best winning elapsed time gets recorded
