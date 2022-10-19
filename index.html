@@ -13,41 +13,41 @@
 <div id="splash-screen">
     <h2>Instructions</h2>
     <h3> <strong>Chihiro has gotten lost in the spirit world and she must make her way back home! <br>
-      She must eat food to stay invisible while crossing the bridge <br>
-      She must get across the bridge safely by avoiding the spirits and eating food along the way <br>
+      She must eat food to remain invisible while crossing the bridge <br>
+      She must get across the bridge safely by avoiding the spirits and eating the food along the way <br>
       There is a timer that will show how long it will take her to get to the end <br>
-      However, there are some special foods which will drop from time to time which will take <br>
+      However, there are some special foods which will will drop and they will take <br>
       Time away from the timer, making you win the game faster <br>
       <br>
       You may use your arrow keys on your keyboard in order to make Chihiro move.</p>
   </strong> 
     <div class="buttons">
       <button id="start-button">Start Game</button>
-      <button id="sound">Sound</button>
-      <button id="mute">Mute</button>
+      <button id="sound">Play Music</button>
+      
   
     </div>
  </div>   
-
-    
-
-    
-
 
 
     <div id="game">
         <canvas id="canvas" width="1400" height="800" ></canvas>
     </div>
-
+    <div id="side-buttons">
+          
+    <button class="flexbuttons" id="mute">Mute</button>
+    <button class="flexbuttons" id="pause">Pause</button>
+  </div>
 
     <div id="game-over">
       <h1>Oh no! You have been caught by the spirits <br> and they are ready to feast on you!</h1>
+      <button id="restart"> Try again?</button>
     </div>
 
     <div id="win-game">
-      <h2>Congratulations! you have survived been eaten by the spirits!</h1>
-      <h3>Player score: <p>secs</p></h3>
-      <button id="restart">Try again?</button>
+      <h2  id="congrats">Congratulations! you have survived been eaten by the spirits!</h1>
+      <h3  id="score">Player score: <p></p></h3>
+      <button id="win-start">Try again?</button>
 
     </div>
 

@@ -8,11 +8,14 @@ const ctx = canvas.getContext("2d");
 let startScreen = document.querySelector("#splash-screen");
 let startBtn = document.querySelector("#start-button");
 let restartBtn = document.querySelector("#restart");
+let winBtn = document.querySelector("#win-start");
 let soundBtn = document.querySelector("#sound");
 let muteBtn = document.querySelector("#mute");
 let titleText = document.querySelector(".title-text")
 let gameOverDiv = document.querySelector("#game-over");
 let winGame = document.querySelector("#win-game");
+let pauseBtn = document.querySelector("#pause");
+
 
 
 
@@ -35,6 +38,8 @@ const chihiroImage = new Image()
 chihiroImage.src = "/images/chihiro-running.png"
 const spiritImage = new Image()
 spiritImage.src = "/images/spirit.png";
+const radishSpiritImage = new Image()
+radishSpiritImage.src = "/images/radish-spirit.png"
 const foodImage = new Image()
 foodImage.src = "/images/food.png";
 const specialFoodImage = new Image()
@@ -48,70 +53,90 @@ let isMovingLeft = false;
 let chihiroX = 20;
 let chihiroY = 530;
 const chihiroWidth = 180;
-const chihiroHeight = 230;
+const chihiroHeight = 200;
 
 // Game variables 
 let isGameOver = false;
 let gameId = 0;
-let invisibilityTimerLeft = 10;
+let invisibilityTimerLeft = 15;
+let winningTime = ""
 let winningTimer= 0;
-let timeLeft = 2;
+let timeLeft = 120;
 let bgx = 0
 let bgx2 = canvas.width
-let spiritFrequency;
-let foodFrequency;
 let specialFrequency;
 let intervalId = null;
 
 
 // Spirits dimension and speed
 let spirits = [];
-const spiritWidth = 80;
-const spiritHeight = 190;
+const spiritWidth = 90;
+const spiritHeight = 200;
 let spiritX = 1400;
 let spiritY = 280
 
 
+// Radish Spirits dimension and speed
+let radishSpirits = [];
+const radishSpiritWidth = 120;
+const radishSpiritHeight = 200;
+let radishSpiritX = 1400;
+let radishSpiritY = 280
+
 
 // Foods dimensions and speeds
 let foods = [];
-let foodWidth = 40;
-let foodHeight = 50;
+let foodWidth = 50;
+let foodHeight = 60;
 let foodX = 1400;
 let foodY = 280
 let foodInvisivility = 5
 
 
 let specialFoods = [];
-let specialWidth = 40;
-let specialHeight = 50;
+let specialWidth = 50;
+let specialHeight = 60;
 let specialX = 1400
 let specialY = 280
 let specialRemove = -5
 
 
 
-splashSong.play();
-canvas.style.display = "none"
-gameOverDiv.style.display = "none";
-  winGame.style.display = "none";
+
 
 
 
 // Create Functions for the game
+const splashScreen = () => {
+  canvas.style.display = "none"
+  gameOverDiv.style.display = "none";
+  winGame.style.display = "none";
+  muteBtn.style.display = "none";
+  pauseBtn.style.display = "none";
+}
+
+const gameReset = () => {
+  timeLeft = 120;
+  invisibilityTimerLeft = 10;
+  animate()
+}
+
 const drawChihiro = () => {
+ // ctx.fillStyle = "red"
+//ctx.fillRect(chihiroX, chihiroY, chihiroWidth,chihiroHeight )
 ctx.drawImage(chihiroImage,chihiroX, chihiroY, chihiroWidth,chihiroHeight )
 }
 
+
 const movePlayer = () => {
   if (isMovingUp === true && chihiroY > 170) {
-    chihiroY -= 5;
+    chihiroY -= 10
   } else if (isMovingDown === true && chihiroY < 570) {
-  chihiroY += 5;
-  } else if (isMovingRight === true ) {
-    chihiroX += 5
-  } else if (isMovingLeft === true)  {
-    chihiroX -= 7
+  chihiroY += 10
+  } else if (isMovingRight === true && chihiroX < 1350) {
+    chihiroX += 10
+  } else if (isMovingLeft === true && chihiroX > 30)  {
+    chihiroX -= 10
   }
 }
 
@@ -122,8 +147,25 @@ class SpiritsClass {
     }
     
     move() {
-        this.x -= 5
+        this.x -= 10
+        if (timeLeft  <= 30) {
+          this.x -= 8
+        }
     }
+}
+
+class RadishSpiritsClass {
+  constructor() {
+      this.x = 1400
+      this.y = Math.random() * (canvas.height - radishSpiritHeight)
+  }
+  
+  move() {
+      this.x -= 7
+      if (timeLeft  <= 30) {
+        this.x -= 6
+      }
+  }
 }
 
 class FoodsClass {
@@ -133,7 +175,7 @@ class FoodsClass {
   }
   
   move() {
-      this.x -= 5
+      this.x -= 8
   }
 }
 
@@ -144,29 +186,38 @@ class SpecialsClass {
   }
   
   move() {
-      this.x -= 5
+      this.x -= 10
   }
 }
 
 const drawSpirits = (currentSpiritX, currentSpiritY) => {
-ctx.drawImage(spiritImage,currentSpiritX,currentSpiritY,spiritWidth,spiritHeight)
+  //ctx.fillRect(currentSpiritX,currentSpiritY,spiritWidth,spiritHeight )
+  ctx.drawImage(spiritImage,currentSpiritX,currentSpiritY,spiritWidth,spiritHeight)
 } 
 
+const drawRadishSpirits = (currentRadishSpiritX, currentRadishSpiritY) => {
+  ctx.drawImage(radishSpiritImage,currentRadishSpiritX,currentRadishSpiritY,radishSpiritWidth,radishSpiritHeight)
+}
+
 const drawFood = (currentFoodX, currentFoodY) => {
-ctx.drawImage(foodImage, currentFoodX, currentFoodY, foodWidth, foodHeight);
+  //ctx.fillRect(currentFoodX, currentFoodY, foodWidth, foodHeight )
+  ctx.drawImage(foodImage, currentFoodX, currentFoodY, foodWidth, foodHeight);
+
 }
 
 
 const drawSpecialFood = (currentSpecialX, currentSpecialY) => {
+ // ctx.fillRect(currentSpecialX, currentSpecialY, specialWidth, specialHeight )
   ctx.drawImage(specialFoodImage, currentSpecialX, currentSpecialY, specialWidth, specialHeight);
+ 
 }
 
 
 const backgroundDraw = () => {
     ctx.drawImage(background, bgx, 0, canvas.width, canvas.height);
     ctx.drawImage(background2, bgx2, 0, canvas.width, canvas.height);
-    bgx -= 3
-    bgx2 -= 3
+    bgx -= 4
+    bgx2 -= 4
 if (bgx < -canvas.width) {
   bgx = canvas.width;
 } 
@@ -182,6 +233,21 @@ let drawTime = () => {
   ctx.fillText(`Time left to win: ${timeLeft}s `, 200, 70);
 }
 
+timeElapsed = () => {
+  intervalId = setInterval(() => {
+    winningTimer += 1;
+    console.log(winningTimer)
+  },1000)
+  if (isGameOver === true) {
+    winningTime = winningTimer
+    setTimeout
+  } else if (winningGame) {
+    winningTime = winningTimer
+    setTimeout
+    return winningTimer;
+  }
+  
+}
 
 startTimer = () => {
   intervalId = setInterval(() => {
@@ -213,27 +279,31 @@ const winningGame = () => {
   gameOverDiv.style.display = "none";
   canvasDiv.style.display = "none";
   restartBtn.style.display = "center"
+  pauseBtn.style.display = "none"
+  muteBtn.style.display = "none"
   gameSong.pause();
   winGameSong.play();
   cancelAnimationFrame(gameId)
 }
 
 const gameOver =  () => {
+  isGameOver = true
   gameOverDiv.style.display = "flex";
   canvasDiv.style.display = "none";
-  restartBtn.style.display = "center"
+  restartBtn.style.display = "block"
+  pauseBtn.style.display = "none"
+  muteBtn.style.display = "none"
   gameSong.pause()
   gameOverSong.play()
   cancelAnimationFrame(gameId)
   
-
 }
 
 const addSpirits = () => {
-  const nextSpirits = spirits.filter( spirit => spirit.x < canvas.width)
+  const nextSpirits = spirits.filter( spirit => spirit.x < canvas.width && spirit.y > 170 && spirit.y < 750)
 
 
-  if (gameId % 100 === 0) {
+  if (gameId % 50 === 0) {
       nextSpirits.push(new SpiritsClass())
   }
   
@@ -247,8 +317,9 @@ const addSpirits = () => {
     spirit.y + 150 <= chihiroY + chihiroHeight &&
     spirit.y - 30 + spiritHeight  > chihiroY
   ) {console.log("Game Over");
+    isGameOver = true
      gameOver();
-     
+     cancelAnimationFrame(gameId);
   }
       
   }) 
@@ -256,54 +327,83 @@ const addSpirits = () => {
   spirits = nextSpirits;
 }
 
+const addRaddishSpirits = () => {
+  const nextRadishSpirits = radishSpirits.filter( radishSpirit => radishSpirit.x < canvas.width && radishSpirit.y > 170 && radishSpirit.y < 750)
+
+
+  if (gameId % 50 === 0) {
+      nextRadishSpirits.push(new RadishSpiritsClass())
+  }
+  
+  nextRadishSpirits.forEach(radishSpirit => {
+     drawRadishSpirits(radishSpirit.x, radishSpirit.y)
+      radishSpirit.move()
+  
+  if (
+    radishSpirit.x + 10 <= chihiroX + chihiroWidth  &&
+    radishSpirit.x  - 20 + spiritWidth >= chihiroX &&
+    radishSpirit.y + 150 <= chihiroY + chihiroHeight &&
+    radishSpirit.y - 30 + spiritHeight  > chihiroY
+  ) {console.log("Game Over");
+    isGameOver = true
+     gameOver();
+     cancelAnimationFrame(gameId);
+  }
+      
+  }) 
+  
+  radishSpirits = nextRadishSpirits;
+}
+
 const addFood = () => {
-  const nextFoods = foods.filter( food => food.x < canvas.width)
+  let nextFoods = foods.filter( food => food.x < canvas.width && food.y > 170 && food.y < 750)
 
 
-  if (gameId % 300 === 0) {
+  if (gameId % 100 === 0) {
       nextFoods.push(new FoodsClass())
   }
   
-  nextFoods.forEach(food => {
+  nextFoods = nextFoods.map(food => {
      drawFood(food.x, food.y)
       food.move()
   
       if (
-        food.x + 10 <= chihiroX + chihiroWidth  &&
-        food.x  - 20 + foodWidth >= chihiroX &&
-        food.y + 150 <= chihiroY + chihiroHeight &&
-        food.y - 30 + foodHeight  > chihiroY
+        food.x  <= chihiroX + chihiroWidth  &&
+        food.x  + foodWidth >= chihiroX &&
+        food.y  <= chihiroY + chihiroHeight &&
+        food.y + foodHeight  > chihiroY
       ) {
        invisibilityTimerLeft += 5;
-    }
-      
-  }) 
-  
+       
+    } else {
+      return food }
+  }).filter(element => element )  // gets rid of food after consuming it
   foods = nextFoods;
 }
 
 const addSpecial = () => {
-  const nextSpecials = specialFoods.filter( special => special.x < canvas.width)
+  let nextSpecials = specialFoods.filter( special => special.x < canvas.width && special.y > 170 && special.y < 750)
 
 
-  if (gameId % 500 === 0) {
+  if (gameId % 100 === 0) {
       nextSpecials.push(new SpecialsClass());
   }
   
-  nextSpecials.forEach(special => {
+  nextSpecials = nextSpecials.map(special => {
      drawSpecialFood(special.x, special.y)
       special.move()
   
-      /* if (
-        special.x + 10 <= chihiroX + chihiroWidth  &&
-        speccial.x  - 20 + specialWidth >= chihiroX &&
-        special.y + 150 <= chihiroY + chihiroHeight &&
-        special.y - 30 + specialHeight  > chihiroY
+     if (
+        special.x <= chihiroX + chihiroWidth  &&
+        special.x + specialWidth >= chihiroX &&
+        special.y <= chihiroY + chihiroHeight &&
+        special.y  + specialHeight  > chihiroY
       ) {
-        requestAnimationFrame(animate)
-      } */
+        timeLeft -= 5;
+      }  else {
+        return special }
       
-  }) 
+  }).filter(element => element) // gets rid of special food after consuming it.
   
   specialFoods = nextSpecials;
 }
@@ -315,28 +415,31 @@ drawInvisivility();
 drawChihiro();
 movePlayer();
 addSpirits()
+addRaddishSpirits()
 addFood()
 addSpecial()
+console.log(winningTime);
 
 
 
 
-if (timeLeft === 0) {
+if (timeLeft <= 0) {
     winningGame()
     cancelAnimationFrame(gameId)
+    
   } else if (invisibilityTimerLeft === 0) {
     gameOver()
     cancelAnimationFrame(gameId)
-  } else {
+   
+  } else if (isGameOver) {
+    cancelAnimationFrame(gameId)
+  }
+  else {
     gameId = requestAnimationFrame(animate)
 
 }
 }
 
-window.onload = () => {
-    document.getElementById("start-button").onclick = () => {
-        startGame();
-    }
 
 function startGame() {
   splashSong.pause();
@@ -349,18 +452,21 @@ restartBtn.style.display = "none";
 gameOverDiv.style.display = "none";
 soundBtn.style.display = "none";
 muteBtn.style.display = "block";
+pauseBtn.style.display ="block"
 titleText.style.display = "none";
 winGame.style.display = "none";
  animate();
  startTimer();
  invisivilityTimer();
+ timeElapsed();
+ let score = document.querySelector("#score")
+ score.innerHTML = `Your winning time is : ${winningTime} seconds!`
+
 
 document.addEventListener('keydown', event => {
     if (event.code === 'ArrowUp') {
-      console.log('We are going up!')
       isMovingUp = true;
     } else if (event.code === 'ArrowDown') {
-      console.log('We are going down!')
       isMovingDown = true;
     } else if (event.code === 'ArrowRight') {
       isMovingRight = true;
@@ -378,42 +484,49 @@ document.addEventListener('keydown', event => {
 
 
 
+
 window.addEventListener("load", () => {
+ splashScreen()
     startBtn.addEventListener("click", () => {
-      startGame();
-     // audio.play();
+      startGame()
     });
   
+    winBtn.addEventListener("click", () => {
+      gameOverSong.pause()
+      winGameSong.pause()
+      location.reload()
+    });
+
     restartBtn.addEventListener("click", () => {
-      startGame();
-      //winSound.pause();
-      //loseSoung.pause();
-      startScreen.style.display = "none";
-      canvasDiv.style.display = "flex";
-      canvas.style.display = "block";
-      startBtn.style.display = "none";
-      restartBtn.style.display = "none";
-      soundBtn.style.display = "none";
-      muteBtn.style.display = "block";
-      titleText.style.display = "none";
+      gameOverSong.pause()
+      winGameSong.pause()
+      location.reload()
     });
     soundBtn.addEventListener("click", () => {
-      if (soundBtn.innerHTML == "Sound") {
-        soundBtn.innerHTML = "Mute";
-        audio.play();
+      if (soundBtn.innerHTML == "Play Music") {
+        soundBtn.innerHTML = "Stop Music";
+      splashSong.play()
       } else {
-        soundBtn.innerHTML = "Sound";
-       // audio.pause();
-      }
-    });
+        soundBtn.innerHTML = "Play Music";
+      splashSong.pause()
+      } 
+    }); 
     muteBtn.addEventListener("click", () => {
       if (muteBtn.innerHTML == "Mute") {
         muteBtn.innerHTML = "Sound";
-        //audio.pause();
+        gameSong.pause();
       } else {
         muteBtn.innerHTML = "Mute";
-       // audio.play();
+        gameSong.play();
       }
     })
+    pauseBtn.addEventListener("click", () => {
+    if (pauseBtn.innerHTML == "Pause") {
+      pauseBtn.innerHTML == "Resume"
+      animate.pause()
+    } else {
+      pauseBtn.innerHTML == "Pause"
+      animate.play()
+    }
+    })
 });
-}
