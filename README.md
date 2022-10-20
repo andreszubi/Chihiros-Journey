@@ -1,6 +1,5 @@
 ## Chihiro's Journey
-Link to Github: https://github.com/andreszubi/Chihiros-Journey/
-Link for Deployed Game : https://andreszubi.github.io/Chihiros-Journey/
+
 ## Description
 Chihiros' Journey is a game based of the animated film called "Spirited Away.
 In this game, your objective is to get accross the bridge safely without colliding
@@ -73,5 +72,9 @@ Collision interactions between the player,  spirits and food.
 Add to Invisibility timer food
 Remove time from winning time by consuming special food.
 
-## Slides
+## Links
+Link to Github: https://github.com/andreszubi/Chihiros-Journey/
+
+Link for Deployed Game : https://andreszubi.github.io/Chihiros-Journey/
+
 https://docs.google.com/presentation/d/1aIXHqaWJw7ACK9RuHig6bKEiHshTVNAhzLH9HZRK0Mg/edit?usp=sharing
