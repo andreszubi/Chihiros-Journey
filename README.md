@@ -15,61 +15,104 @@ If you collide with any of them, then you lose.
 ## Backlog
 
 Add Scoreboard.
+
 Have multiple songs in the game.
+
 Restart after you lose.
+
 Add a pause game button.
 
 ## Data Structure
 
 Index.js
+
 splashScreen()
+
 drawChihiro()
+
 movePlayer()
+
 class SpiritsClass
+
 class RadishSpiritsClass
+
 class FoodsClass
+
 class SpecialsClass
+
 drawSpirits()
+
 drawRadishSpirits()
+
 drawFood()
+
 drawSpecialFood()
+
 backgroundDraw()
+
 drawTime()
+
 timeElapsed()
+
 startTimer()
+
 invisivilityTimer()
+
 drawInvisivility()
+
 winningGame()
+
 gameOver()
+
 addSpirits()
+
 addRadishSpirits()
+
 addFoods()
+
 addSpecial()
+
 animate()
+
 startGame()
+
 drawGamePause()
 
 Event Listeners
 
 ## Game States
 Splash Screen
+
 Pause Game Screen
+
 Game Screen
+
 Game Over Screen
+
 Winning Screen
 
 ## Tasks
 
-Create HTML
-Create js
-create CSS
-Create Background
-Create Chihiro
-Create obstacles
-Move obstacles
-Create foods and make them move
+Create HTML.
+
+Create js.
+
+create CSS.
+
+Create Background.
+
+Create Chihiro.
+
+Create obstacles.
+
+Move obstacles.
+
+Create foods and make them move.
+
 Collision interactions between the player,  spirits and food.
-Add to Invisibility timer food
+
+Add to Invisibility timer food.
+
 Remove time from winning time by consuming special food.
 
 ## Links
