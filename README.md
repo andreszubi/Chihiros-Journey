@@ -1,5 +1,5 @@
 ## Chihiro's Journey
-Link to Github: https://github.com/andreszubi/Chihiros-Journey
+Link to Github: https://github.com/andreszubi/Chihiros-Journey/
 Link for Deployed Game : https://andreszubi.github.io/Chihiros-Journey/
 ## Description
 Chihiros' Journey is a game based of the animated film called "Spirited Away.
