@@ -153,9 +153,9 @@ class SpiritsClass {
     }
     
     move() {
-        this.x -= 8
+        this.x -= 6
         if (timeLeft  <= 30) {
-          this.x -= 10
+          this.x -= 8
         }
     }
 }
@@ -167,9 +167,9 @@ class RadishSpiritsClass {
   }
   
   move() {
-      this.x -= 7
+      this.x -= 5
       if (timeLeft  <= 30) {
-        this.x -= 8
+        this.x -= 7
       }
   }
 }
