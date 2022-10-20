@@ -1,4 +1,5 @@
 
+
 #splash-screen {
   padding-top: 100px;  
   display: flex;
@@ -88,6 +89,14 @@
   margin-right: 100px;
 }
 
+#start-button:active {
+  background: #e5e5e5;
+  -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+          box-shadow: inset 0px 0px 5px #c1c1c1;
+   outline: none;
+}
+
 #sound {
   background-image: url(./images/cute-button.jpeg);
   border-radius: 50%;
@@ -99,6 +108,14 @@
   margin-right: 100px;
 }
 
+#sound:active {
+  background: #e5e5e5;
+  -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+          box-shadow: inset 0px 0px 5px #c1c1c1;
+   outline: none;
+}
+
 #mute {
   background-image: url(./images/cute-button.jpeg);
   border-radius: 50%;
@@ -107,6 +124,14 @@
   font-size: 50px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   border: 2px solid pink;
+}
+
+#mute:active {
+  background: #e5e5e5;
+  -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+          box-shadow: inset 0px 0px 5px #c1c1c1;
+   outline: none;
 }
 
 #restart {
@@ -120,6 +145,14 @@
   margin-right: 100px;
 }
 
+#restart:active {
+  background: #e5e5e5;
+  -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+          box-shadow: inset 0px 0px 5px #c1c1c1;
+   outline: none;
+}
+
 #win-start {
   background-image: url(./images/cute-button.jpeg);
   border-radius: 50%;
@@ -130,6 +163,15 @@
   border: 2px solid pink;
   margin-right: 100px;
 }
+
+#win-start:active {
+  background: #e5e5e5;
+  -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+          box-shadow: inset 0px 0px 5px #c1c1c1;
+   outline: none;
+}
+
 #pause {
   
     background-image: url(./images/cute-button.jpeg);
@@ -141,6 +183,14 @@
     border: 2px solid pink;
     margin-right: 100px;
   
+}
+
+#pause:active {
+  background: #e5e5e5;
+  -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
+     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
+          box-shadow: inset 0px 0px 5px #c1c1c1;
+   outline: none;
 }
 
 
@@ -162,4 +212,3 @@
 body {
     background-color: pink;
 }
-
