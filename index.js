@@ -22,10 +22,14 @@ let pauseBtn = document.querySelector("#pause");
 //sounds
 const splashSong = new Audio("./sounds/Start song One Summer's Day.mp3");
 const gameSong = new Audio('./sounds/Soot balls Spirited Away - Joe Hisaishi.mp3');
+gameSong.volume = 0.2;
 const gameOverSong = new Audio ("./sounds/The Bottomless Pit - Joe Hisaishi.mp3");
+gameOverSong.volume = 0.1;
 const winGameSong = new Audio("./sounds/Joe Hisaishi - Always With Me (Spirited Away 2002).mp3");
 const foodSound = new Audio ("./sounds/Slurp - Sound Effect (HD).mp3");
+foodSound.volume = 0.1;
 const yummy = new Audio ("./sounds/Yummy sound effect.mp3");
+yummy.volume = 0.1;
 // images used
 const background = new Image()
 background.src = "./images/game background copy .jpg"
@@ -53,7 +57,7 @@ let isMovingRight = false;
 let isMovingLeft = false;
 let chihiroX = 20;
 let chihiroY = 530;
-const chihiroWidth = 190;
+const chihiroWidth = 120;
 const chihiroHeight = 145;
 
 // Game variables 
@@ -67,6 +71,10 @@ let bgx = 0
 let bgx2 = canvas.width
 let specialFrequency;
 let intervalId = null;
+let isGamePaused = false;
+let intervalTimeElapsed = 0;
+let intervalInvisibility = 0;
+let intervalStartTimer = 0;
 
 
 // Spirits dimension and speed
@@ -127,7 +135,7 @@ ctx.drawImage(chihiroImage,chihiroX, chihiroY, chihiroWidth,chihiroHeight )
 const movePlayer = () => {
   if (isMovingUp === true && chihiroY > 230) {
     chihiroY -= 10
-  } else if (isMovingDown === true && chihiroY < 570) {
+  } else if (isMovingDown === true && chihiroY < 650) {
   chihiroY += 10
   } else if (isMovingRight === true && chihiroX < 1350) {
     chihiroX += 10
@@ -135,6 +143,8 @@ const movePlayer = () => {
     chihiroX -= 10
   }
 }
+
+// Classes created in order to make random arrays of the spirits and the foods to constantly appear.
 
 class SpiritsClass {
     constructor() {
@@ -225,36 +235,32 @@ if (bgx2 <  -canvas.width) {
 
 let drawTime = () => {
   ctx.beginPath();
+  ctx.fillStyle = "black"
   ctx.font = "30px sans-serif";
   ctx.fillText(`Time left to win: ${timeLeft}s `, 200, 70);
+  ctx.closePath()
 }
 
 timeElapsed = () => {
-  intervalId = setInterval(() => {
+  intervalTimeElapsed = setInterval(() => {
     winningTimer += 1;
     console.log(winningTimer)
   },1000)
-  if (isGameOver === true) {
-    winningTime = winningTimer
-    setTimeout
-  } else if (winningGame) {
-    winningTime = winningTimer
-    setTimeout
-    return winningTimer;
-  }
+  
+  
   
 }
 
 startTimer = () => {
-  intervalId = setInterval(() => {
+  intervalStartTimer = setInterval(() => {
     timeLeft -= 1;
     if (timeLeft <= 0) {
     }
   }, 1000)
 }
 
-  invisivilityTimer = () => {
-   intervalId = setInterval(() => {
+  invisibilityTimer = () => {
+   intervalInvisibility = setInterval(() => {
     invisibilityTimerLeft -= 1;
     if (invisibilityTimerLeft === 0) {
     }
@@ -263,14 +269,24 @@ startTimer = () => {
   }
 
 
-let drawInvisivility = () => {
+let drawInvisibility = () => {
   ctx.beginPath();
+  ctx.fillStyle = "black"
   ctx.font = "30px sans-serif";
   ctx.fillText(`Invisibility time left: ${invisibilityTimerLeft}s `, 700, 70);
+  ctx.closePath()
 }
 
+let drawGamePaused = () => {
+  ctx.beginPath()
+  ctx.fillStyle = "red"
+  ctx.font = "150px sans-serif";
+  ctx.fillText("Game Paused", 260,400)
+  ctx.closePath()
+}
 
 const winningGame = () => {
+  isGameOver = true;
   winGame.style.display = "flex"
   gameOverDiv.style.display = "none";
   canvasDiv.style.display = "none";
@@ -279,6 +295,8 @@ const winningGame = () => {
   muteBtn.style.display = "none"
   gameSong.pause();
   winGameSong.play();
+  let score = document.querySelector("#score")
+ score.innerHTML = `Your winning time is : ${winningTimer} seconds!`
   cancelAnimationFrame(gameId)
 }
 
@@ -409,14 +427,22 @@ const addSpecial = () => {
 const animate = () => {
 backgroundDraw()
 drawTime()
-drawInvisivility();
+drawInvisibility();
 drawChihiro();
 movePlayer();
 addSpirits()
 addRadishSpirits()
 addFood()
 addSpecial()
-console.log(winningTime);
+
+if (isGamePaused) {
+drawGamePaused()
+}
+
+ if (isGameOver) {
+  console.log(winningTimer);
+  clearInterval(intervalId)
+  }
 
 
 
@@ -432,16 +458,15 @@ if (timeLeft <= 0) {
   } else if (isGameOver) {
     cancelAnimationFrame(gameId)
   }
-  else {
+  else if (!isGamePaused) {
     gameId = requestAnimationFrame(animate)
-
 }
 }
 
 
 function startGame() {
-  splashSong.pause();
-  gameSong.play();
+splashSong.pause();
+gameSong.play();
 startScreen.style.display = "none";
 canvasDiv.style.display = "flex";
 canvas.style.display = "block";
@@ -453,12 +478,12 @@ muteBtn.style.display = "block";
 pauseBtn.style.display ="block"
 titleText.style.display = "none";
 winGame.style.display = "none";
- animate();
- startTimer();
- invisivilityTimer();
- timeElapsed();
- let score = document.querySelector("#score")
- score.innerHTML = `Your winning time is : ${winningTime} seconds!`
+timeElapsed(); 
+animate();
+startTimer();
+invisibilityTimer();
+
+ 
 
 
 
@@ -504,7 +529,7 @@ window.addEventListener("load", () => {
       location.reload()
     });
     soundBtn.addEventListener("click", () => {
-      if (soundBtn.innerHTML == "Play Music") {
+      if (soundBtn.innerHTML = "Play Music") {
         soundBtn.innerHTML = "Stop Music";
       splashSong.play()
       } else {
@@ -513,7 +538,7 @@ window.addEventListener("load", () => {
       } 
     }); 
     muteBtn.addEventListener("click", () => {
-      if (muteBtn.innerHTML == "Mute") {
+      if (muteBtn.innerHTML === "Mute") {
         muteBtn.innerHTML = "Sound";
         gameSong.pause();
       } else {
@@ -522,12 +547,24 @@ window.addEventListener("load", () => {
       }
     })
     pauseBtn.addEventListener("click", () => {
-    if (pauseBtn.innerHTML == "Pause") {
-      pauseBtn.innerHTML == "Resume"
-      //cancelAnimationFrame(startGame())
+    if (isGamePaused) {
+      pauseBtn.innerHTML = "Resume"
+      isGamePaused = false;
+      splashSong.pause()
+      gameSong.play()
+      timeElapsed(); // to make the timers resume from they were at.
+      startTimer();  // to make the timers resume from they were at.
+      invisibilityTimer(); // to make the timers resume from they were at.
+      animate()
     } else {
-      pauseBtn.innerHTML == "Pause"
-      //requestAnimationFrame(startGame())
+      pauseBtn.innerHTML = "Pause"
+      isGamePaused = true;
+      gameSong.pause()
+      splashSong.play()
+      drawGamePaused();
+      clearInterval(intervalStartTimer);  // to make the timers to stop counting the time.
+      clearInterval(intervalInvisibility); // // to make the timers to stop counting the time.
+      clearInterval(intervalTimeElapsed); // // to make the timers to stop counting the time.
     }
     })
 });

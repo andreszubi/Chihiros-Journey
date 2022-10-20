@@ -44,10 +44,13 @@ addFoods()
 addSpecial()
 animate()
 startGame()
+drawGamePause()
+
 Event Listeners
 
 
 Splash Screen
+Pause Game Screen
 Game Screen
 Game Over Screen
 Winning Screen

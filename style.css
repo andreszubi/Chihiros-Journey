@@ -9,7 +9,7 @@
     background-image: url(./images/splash2-picture.jpeg);
    background-repeat: no-repeat;
    background-position: center;
-  background-size: cover;
+  background-size:contain;
   height: 800px;
     color: white;
     text-shadow: #020819 1px 1px 1px;
@@ -21,7 +21,7 @@
   background-image: url(./images/game-over.jpg);
   background-repeat: no-repeat;
   background-position: center;
- background-size: cover;
+ background-size: contain;
  height: 800px;
   display: flex;
     flex-direction: column;
