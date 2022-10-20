@@ -20,31 +20,31 @@ let pauseBtn = document.querySelector("#pause");
 
 
 //sounds
-const splashSong = new Audio("/sounds/Start song One Summer's Day.mp3");
-const gameSong = new Audio('/sounds/Soot balls Spirited Away - Joe Hisaishi.mp3');
-const gameOverSong = new Audio ("/sounds/The Bottomless Pit - Joe Hisaishi.mp3");
-const winGameSong = new Audio("/sounds/Joe Hisaishi - Always With Me (Spirited Away 2002).mp3");
-const foodSound = new Audio ("/sounds/Slurp - Sound Effect (HD).mp3");
-const yummy = new Audio ("/sounds/Yummy sound effect.mp3");
+const splashSong = new Audio("./sounds/Start song One Summer's Day.mp3");
+const gameSong = new Audio('./sounds/Soot balls Spirited Away - Joe Hisaishi.mp3');
+const gameOverSong = new Audio ("./sounds/The Bottomless Pit - Joe Hisaishi.mp3");
+const winGameSong = new Audio("./sounds/Joe Hisaishi - Always With Me (Spirited Away 2002).mp3");
+const foodSound = new Audio ("./sounds/Slurp - Sound Effect (HD).mp3");
+const yummy = new Audio ("./sounds/Yummy sound effect.mp3");
 // images used
 const background = new Image()
-background.src = "/images/game background copy .jpg"
+background.src = "./images/game background copy .jpg"
 const background2 = new Image()
-background2.src = "/images/game background copy2.jpg"
+background2.src = "./images/game background copy2.jpg"
 const gameOverScreen = new Image()
-gameOverScreen.src = "/images/game-over.jpg";
+gameOverScreen.src = "./images/game-over.jpg";
 const winningScreen = new Image()
-winningScreen.src = "/images/splash-picture.jpg";
+winningScreen.src = "./images/splash-picture.jpg";
 const chihiroImage = new Image()
-chihiroImage.src = "/images/chihiro-running.png"
+chihiroImage.src = "./images/chihiro-running.png"
 const spiritImage = new Image()
-spiritImage.src = "/images/spirit.png";
+spiritImage.src = "./images/spirit.png";
 const radishSpiritImage = new Image()
-radishSpiritImage.src = "/images/radish-spirit.png"
+radishSpiritImage.src = "./images/radish-spirit.png"
 const foodImage = new Image()
-foodImage.src = "/images/food.png";
+foodImage.src = "./images/food.png";
 const specialFoodImage = new Image()
-specialFoodImage.src = "/images/special-food.png"
+specialFoodImage.src = "./images/special-food.png"
 
 // Chihiro dimension and movement
 let isMovingUp = false;
