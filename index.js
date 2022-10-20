@@ -167,9 +167,9 @@ class RadishSpiritsClass {
   }
   
   move() {
-      this.x -= 6
+      this.x -= 7
       if (timeLeft  <= 30) {
-        this.x -= 7
+        this.x -= 8
       }
   }
 }
