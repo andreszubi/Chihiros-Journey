@@ -77,4 +77,4 @@ Link to Github: https://github.com/andreszubi/Chihiros-Journey/
 
 Link for Deployed Game : https://andreszubi.github.io/Chihiros-Journey/
 
-https://docs.google.com/presentation/d/1aIXHqaWJw7ACK9RuHig6bKEiHshTVNAhzLH9HZRK0Mg/edit?usp=sharing
+Link for Google Slides: https://docs.google.com/presentation/d/1aIXHqaWJw7ACK9RuHig6bKEiHshTVNAhzLH9HZRK0Mg/edit?usp=sharing
