@@ -8,7 +8,9 @@ into any of the spirits along your way, or else you will lose the game. You will
 ## MVP
 
 Chihiro needs to move around to avoid the spirits and to eat the foods heading her way.
+
 Two different types of spirits will be heading towards the player's way.
+
 If you collide with any of them, then you lose.
 
 
