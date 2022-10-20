@@ -24,7 +24,8 @@ const splashSong = new Audio("/sounds/Start song One Summer's Day.mp3");
 const gameSong = new Audio('/sounds/Soot balls Spirited Away - Joe Hisaishi.mp3');
 const gameOverSong = new Audio ("/sounds/The Bottomless Pit - Joe Hisaishi.mp3");
 const winGameSong = new Audio("/sounds/Joe Hisaishi - Always With Me (Spirited Away 2002).mp3");
-
+const foodSound = new Audio ("/sounds/Slurp - Sound Effect (HD).mp3");
+const yummy = new Audio ("/sounds/Yummy sound effect.mp3");
 // images used
 const background = new Image()
 background.src = "/images/game background copy .jpg"
@@ -52,8 +53,8 @@ let isMovingRight = false;
 let isMovingLeft = false;
 let chihiroX = 20;
 let chihiroY = 530;
-const chihiroWidth = 180;
-const chihiroHeight = 200;
+const chihiroWidth = 190;
+const chihiroHeight = 145;
 
 // Game variables 
 let isGameOver = false;
@@ -61,7 +62,7 @@ let gameId = 0;
 let invisibilityTimerLeft = 15;
 let winningTime = ""
 let winningTimer= 0;
-let timeLeft = 20;
+let timeLeft = 120;
 let bgx = 0
 let bgx2 = canvas.width
 let specialFrequency;
@@ -71,7 +72,7 @@ let intervalId = null;
 // Spirits dimension and speed
 let spirits = [];
 const spiritWidth = 90;
-const spiritHeight = 200;
+const spiritHeight = 160;
 let spiritX = 1400;
 let spiritY = 280
 
@@ -79,7 +80,7 @@ let spiritY = 280
 // Radish Spirits dimension and speed
 let radishSpirits = [];
 const radishSpiritWidth = 120;
-const radishSpiritHeight = 200;
+const radishSpiritHeight = 160;
 let radishSpiritX = 1400;
 let radishSpiritY = 280
 
@@ -115,11 +116,6 @@ const splashScreen = () => {
   pauseBtn.style.display = "none";
 }
 
-const gameReset = () => {
-  timeLeft = 120;
-  invisibilityTimerLeft = 10;
-  animate()
-}
 
 const drawChihiro = () => {
  // ctx.fillStyle = "red"
@@ -129,7 +125,7 @@ ctx.drawImage(chihiroImage,chihiroX, chihiroY, chihiroWidth,chihiroHeight )
 
 
 const movePlayer = () => {
-  if (isMovingUp === true && chihiroY > 170) {
+  if (isMovingUp === true && chihiroY > 230) {
     chihiroY -= 10
   } else if (isMovingDown === true && chihiroY < 570) {
   chihiroY += 10
@@ -147,9 +143,9 @@ class SpiritsClass {
     }
     
     move() {
-        this.x -= 10
+        this.x -= 8
         if (timeLeft  <= 30) {
-          this.x -= 8
+          this.x -= 10
         }
     }
 }
@@ -161,9 +157,9 @@ class RadishSpiritsClass {
   }
   
   move() {
-      this.x -= 7
+      this.x -= 6
       if (timeLeft  <= 30) {
-        this.x -= 6
+        this.x -= 7
       }
   }
 }
@@ -300,7 +296,7 @@ const gameOver =  () => {
 }
 
 const addSpirits = () => {
-  const nextSpirits = spirits.filter( spirit => spirit.x < canvas.width && spirit.y > 170 && spirit.y < 750)
+  const nextSpirits = spirits.filter( spirit => spirit.x < canvas.width && spirit.y > 200 && spirit.y < 750)
 
 
   if (gameId % 50 === 0) {
@@ -328,7 +324,7 @@ const addSpirits = () => {
 }
 
 const addRadishSpirits = () => {
-  const nextRadishSpirits = radishSpirits.filter( radishSpirit => radishSpirit.x < canvas.width && radishSpirit.y > 170 && radishSpirit.y < 750)
+  const nextRadishSpirits = radishSpirits.filter( radishSpirit => radishSpirit.x < canvas.width && radishSpirit.y > 200 && radishSpirit.y < 750)
 
 
   if (gameId % 50 === 0) {
@@ -373,6 +369,7 @@ const addFood = () => {
         food.y  <= chihiroY + chihiroHeight &&
         food.y + foodHeight  > chihiroY
       ) {
+        foodSound.play();
        invisibilityTimerLeft += 5;
        
     } else {
@@ -399,6 +396,7 @@ const addSpecial = () => {
         special.y <= chihiroY + chihiroHeight &&
         special.y  + specialHeight  > chihiroY
       ) {
+        yummy.play()
         timeLeft -= 5;
       }  else {
         return special }

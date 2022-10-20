@@ -20,7 +20,6 @@ Data Structure
 
 Index.js
 splashScreen()
-gameReset()
 drawChihiro()
 movePlayer()
 class SpiritsClass
