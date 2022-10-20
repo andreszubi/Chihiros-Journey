@@ -529,7 +529,7 @@ window.addEventListener("load", () => {
       location.reload()
     });
     soundBtn.addEventListener("click", () => {
-      if (soundBtn.innerHTML = "Play Music") {
+      if (soundBtn.innerHTML === "Play Music") {
         soundBtn.innerHTML = "Stop Music";
       splashSong.play()
       } else {
