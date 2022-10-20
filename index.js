@@ -547,8 +547,8 @@ window.addEventListener("load", () => {
       }
     })
     pauseBtn.addEventListener("click", () => {
-    if (isGamePaused) {
-      pauseBtn.innerHTML = "Resume"
+    if (isGamePaused ) {
+      pauseBtn.innerHTML = "Pause"
       isGamePaused = false;
       splashSong.pause()
       gameSong.play()
@@ -557,7 +557,7 @@ window.addEventListener("load", () => {
       invisibilityTimer(); // to make the timers resume from they were at.
       animate()
     } else {
-      pauseBtn.innerHTML = "Pause"
+      pauseBtn.innerHTML = "Resume"
       isGamePaused = true;
       gameSong.pause()
       splashSong.play()
