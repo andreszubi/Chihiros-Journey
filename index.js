@@ -66,7 +66,7 @@ let gameId = 0;
 let invisibilityTimerLeft = 15;
 let winningTime = ""
 let winningTimer= 0;
-let timeLeft = 120;
+let timeLeft = 60;
 let bgx = 0
 let bgx2 = canvas.width
 let specialFrequency;
