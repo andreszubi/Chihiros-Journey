@@ -222,8 +222,8 @@ const drawSpecialFood = (currentSpecialX, currentSpecialY) => {
 const backgroundDraw = () => {
     ctx.drawImage(background, bgx, 0, canvas.width, canvas.height);
     ctx.drawImage(background2, bgx2, 0, canvas.width, canvas.height);
-    bgx -= 4
-    bgx2 -= 4
+    bgx -= 6
+    bgx2 -= 6
 if (bgx < -canvas.width) {
   bgx = canvas.width;
 } 
