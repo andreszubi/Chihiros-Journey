@@ -153,7 +153,7 @@ class SpiritsClass {
     }
     
     move() {
-        this.x -= 4
+        this.x -= 5
         if (timeLeft  <= 30) {
           this.x -= 6
         }
@@ -167,7 +167,7 @@ class RadishSpiritsClass {
   }
   
   move() {
-      this.x -= 3
+      this.x -= 4
       if (timeLeft  <= 30) {
         this.x -= 5
       }
@@ -317,7 +317,7 @@ const addSpirits = () => {
   const nextSpirits = spirits.filter( spirit => spirit.x < canvas.width && spirit.y > 200 && spirit.y < 750)
 
 
-  if (gameId % 50 === 0) {
+  if (gameId % 80 === 0) {
       nextSpirits.push(new SpiritsClass())
   }
   
@@ -345,7 +345,7 @@ const addRadishSpirits = () => {
   const nextRadishSpirits = radishSpirits.filter( radishSpirit => radishSpirit.x < canvas.width && radishSpirit.y > 200 && radishSpirit.y < 750)
 
 
-  if (gameId % 50 === 0) {
+  if (gameId % 100 === 0) {
       nextRadishSpirits.push(new RadishSpiritsClass())
   }
   
