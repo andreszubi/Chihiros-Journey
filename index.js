@@ -1,4 +1,3 @@
-//Test
 // Create the canvas
 const canvas = document.querySelector("#canvas");
 canvas.style.border = "5px solid pink"
