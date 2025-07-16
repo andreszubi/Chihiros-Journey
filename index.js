@@ -429,7 +429,11 @@ const winningGame = () => {
   }
   
   gameSong.pause();
-  winGameSong.play();
+  winGameSong.currentTime = 0; // Reset to beginning
+  winGameSong.play().catch(error => {
+    console.log("Win game music autoplay failed, trying again:", error);
+    setTimeout(() => winGameSong.play().catch(() => {}), 100);
+  });
   let score = document.querySelector("#score")
   score.innerHTML = `Your winning time is : ${winningTimer} seconds!`
   cancelAnimationFrame(gameId)
@@ -468,9 +472,17 @@ const gameOver =  () => {
     sideButtonsContainer.style.display = "none";
   }
   
-  gameSong.pause()
-  gameOverSong.play()
-  cancelAnimationFrame(gameId)
+  // Stop game music and play game over music
+  gameSong.pause();
+  gameOverSong.currentTime = 0; // Reset to beginning
+  
+  // Play game over music with fallback for mobile
+  gameOverSong.play().catch(error => {
+    console.log("Game over music autoplay failed, trying again:", error);
+    setTimeout(() => gameOverSong.play().catch(() => {}), 100);
+  });
+  
+  cancelAnimationFrame(gameId);
 }
 
 const addSpirits = () => {
@@ -620,27 +632,8 @@ const getOptimalSettings = () => {
     radishSpawnRate: isMobile ? 120 : 100,
     foodSpawnRate: isMobile ? 140 : 120,
     specialSpawnRate: isMobile ? 220 : 200,
-    fps: isMobile ? 30 : 60
+    fps: 60 // Set to 60 FPS for all devices
   };
-}
-
-// Performance optimization helper
-function getDeviceSettings() {
-    const deviceWidth = window.innerWidth;
-    const deviceHeight = window.innerHeight;
-    const isLandscapeMode = deviceWidth > deviceHeight;
-    const isMobileDevice = deviceWidth <= 768;
-    
-    return {
-        fps: isMobileDevice ? 30 : 60,
-        moveSpeed: isMobileDevice ? 3 : 5,
-        bgSpeed: isMobileDevice ? 2 : 3,
-        spiritSpawnRate: isMobileDevice ? 120 : 80,
-        radishSpawnRate: isMobileDevice ? 150 : 100,
-        foodSpawnRate: isMobileDevice ? 180 : 120,
-        specialSpawnRate: isMobileDevice ? 250 : 200,
-        spawnMultiplier: (isMobileDevice && isLandscapeMode) ? 0.8 : 1
-    };
 }
 
 const animate = (currentTime = 0) => {
@@ -928,17 +921,16 @@ canvas.addEventListener("touchend", (e) => {
 // Handle orientation changes
 window.addEventListener('orientationchange', () => {
   setTimeout(() => {
-    // Recalculate canvas size after orientation change
-    const settings = getOptimalSettings();
-    targetFPS = settings.fps || 60;
+    // Always use 60 FPS regardless of device
+    targetFPS = 60;
     frameTime = 1000 / targetFPS;
   }, 100);
 });
 
 // Also handle resize events for better responsiveness
 window.addEventListener('resize', () => {
-  const settings = getOptimalSettings();
-  targetFPS = settings.fps || 60;
+  // Always use 60 FPS regardless of device
+  targetFPS = 60;
   frameTime = 1000 / targetFPS;
 });
 
