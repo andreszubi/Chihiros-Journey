@@ -18,7 +18,6 @@ let pauseBtn = document.querySelector("#pause");
 
 
 
-
 //sounds
 const splashSong = new Audio("./sounds/Start song One Summer's Day.mp3");
 const gameSong = new Audio('./sounds/Soot balls Spirited Away - Joe Hisaishi.mp3');
@@ -76,6 +75,15 @@ let intervalTimeElapsed = 0;
 let intervalInvisibility = 0;
 let intervalStartTimer = 0;
 
+// Performance optimization variables
+let lastTime = 0;
+const targetFPS = 60;
+const frameTime = 1000 / targetFPS;
+let spiritSpawnTimer = 0;
+let radishSpiritSpawnTimer = 0;
+let foodSpawnTimer = 0;
+let specialSpawnTimer = 0;
+
 
 // Spirits dimension and speed
 let spirits = [];
@@ -122,26 +130,73 @@ const splashScreen = () => {
   winGame.style.display = "none";
   muteBtn.style.display = "none";
   pauseBtn.style.display = "none";
+  
+  const clickToStart = document.querySelector("#click-to-start");
+  
+  // Try to auto-play splash screen music
+  splashSong.play().then(() => {
+    // Music started successfully
+    soundBtn.innerHTML = "Stop Music";
+    if (clickToStart) clickToStart.style.display = "none";
+  }).catch(error => {
+    console.log("Autoplay blocked by browser, will start on user interaction");
+    // Show click prompt
+    if (clickToStart) clickToStart.style.display = "block";
+    
+    // Add one-time click listener to start music on first user interaction
+    const startMusicOnInteraction = () => {
+      splashSong.play();
+      soundBtn.innerHTML = "Stop Music";
+      if (clickToStart) clickToStart.style.display = "none";
+      document.removeEventListener('click', startMusicOnInteraction);
+      document.removeEventListener('keydown', startMusicOnInteraction);
+      document.removeEventListener('touchstart', startMusicOnInteraction);
+    };
+    
+    document.addEventListener('click', startMusicOnInteraction);
+    document.addEventListener('keydown', startMusicOnInteraction);
+    document.addEventListener('touchstart', startMusicOnInteraction);
+  });
 }
 
 
 const drawChihiro = () => {
- // ctx.fillStyle = "red"
-//ctx.fillRect(chihiroX, chihiroY, chihiroWidth,chihiroHeight )
-ctx.drawImage(chihiroImage,chihiroX, chihiroY, chihiroWidth,chihiroHeight )
+  ctx.drawImage(chihiroImage, chihiroX, chihiroY, chihiroWidth, chihiroHeight);
 }
 
 
 const movePlayer = () => {
-  if (isMovingUp === true && chihiroY > 230) {
-    chihiroY -= 10
-  } else if (isMovingDown === true && chihiroY < 650) {
-  chihiroY += 10
-  } else if (isMovingRight === true && chihiroX < 1350) {
-    chihiroX += 10
-  } else if (isMovingLeft === true && chihiroX > 30)  {
-    chihiroX -= 10
+  const moveSpeed = 10;
+  if (isMovingUp && chihiroY > 230) {
+    chihiroY -= moveSpeed;
   }
+  if (isMovingDown && chihiroY < 650) {
+    chihiroY += moveSpeed;
+  }
+  if (isMovingRight && chihiroX < 1350) {
+    chihiroX += moveSpeed;
+  }
+  if (isMovingLeft && chihiroX > 30) {
+    chihiroX -= moveSpeed;
+  }
+}
+
+// Object pools for better performance
+const spiritPool = [];
+const radishSpiritPool = [];
+const foodPool = [];
+const specialPool = [];
+
+// Object pool helper functions
+const getFromPool = (pool, ClassName) => {
+  if (pool.length > 0) {
+    return pool.pop();
+  }
+  return new ClassName();
+}
+
+const returnToPool = (pool, object) => {
+  pool.push(object);
 }
 
 // Classes created in order to make random arrays of the spirits and the foods to constantly appear.
@@ -220,73 +275,83 @@ const drawSpecialFood = (currentSpecialX, currentSpecialY) => {
 
 
 const backgroundDraw = () => {
-    ctx.drawImage(background, bgx, 0, canvas.width, canvas.height);
-    ctx.drawImage(background2, bgx2, 0, canvas.width, canvas.height);
-    bgx -= 2
-    bgx2 -= 2
-if (bgx < -canvas.width) {
-  bgx = canvas.width;
-} 
-if (bgx2 <  -canvas.width) {
-  bgx2 = canvas.width;
-}
+  const bgSpeed = 2;
+  
+  ctx.drawImage(background, bgx, 0, canvas.width, canvas.height);
+  ctx.drawImage(background2, bgx2, 0, canvas.width, canvas.height);
+  
+  bgx -= bgSpeed;
+  bgx2 -= bgSpeed;
+  
+  if (bgx <= -canvas.width) {
+    bgx = canvas.width;
+  } 
+  if (bgx2 <= -canvas.width) {
+    bgx2 = canvas.width;
   }
+}
 
 
-let drawTime = () => {
-  ctx.beginPath();
-  ctx.fillStyle = "black"
+const drawTime = () => {
+  ctx.fillStyle = "black";
   ctx.font = "30px sans-serif";
   ctx.fillText(`Time left to win: ${timeLeft}s `, 200, 70);
-  ctx.closePath()
 }
 
-timeElapsed = () => {
+const timeElapsed = () => {
   intervalTimeElapsed = setInterval(() => {
     winningTimer += 1;
-    console.log(winningTimer)
-  },1000)
-  
-  
-  
+    console.log(winningTimer);
+  }, 1000);
 }
 
-startTimer = () => {
+const startTimer = () => {
   intervalStartTimer = setInterval(() => {
     timeLeft -= 1;
     if (timeLeft <= 0) {
+      winningGame();
     }
-  }, 1000)
+  }, 1000);
 }
 
-  invisibilityTimer = () => {
-   intervalInvisibility = setInterval(() => {
+const invisibilityTimer = () => {
+  intervalInvisibility = setInterval(() => {
     invisibilityTimerLeft -= 1;
     if (invisibilityTimerLeft === 0) {
+      gameOver();
     }
-   }, 1000)
-    
-  }
-
-
-let drawInvisibility = () => {
-  ctx.beginPath();
-  ctx.fillStyle = "black"
-  ctx.font = "30px sans-serif";
-  ctx.fillText(`Invisibility time left: ${invisibilityTimerLeft}s `, 700, 70);
-  ctx.closePath()
+  }, 1000);
 }
 
-let drawGamePaused = () => {
-  ctx.beginPath()
-  ctx.fillStyle = "red"
+
+const drawInvisibility = () => {
+  ctx.fillStyle = "black";
+  ctx.font = "30px sans-serif";
+  ctx.fillText(`Invisibility time left: ${invisibilityTimerLeft}s `, 700, 70);
+}
+
+const drawGamePaused = () => {
+  ctx.fillStyle = "red";
   ctx.font = "150px sans-serif";
-  ctx.fillText("Game Paused", 260,400)
-  ctx.closePath()
+  ctx.fillText("Game Paused", 260, 400);
+}
+
+// Optimized collision detection helper function with collision margins
+const checkCollision = (obj1, obj2, margin = 10) => {
+  return obj1.x + margin < obj2.x + obj2.width - margin &&
+         obj1.x + obj1.width - margin > obj2.x + margin &&
+         obj1.y + margin < obj2.y + obj2.height - margin &&
+         obj1.y + obj1.height - margin > obj2.y + margin;
 }
 
 const winningGame = () => {
   isGameOver = true;
+  
+  // Clear all timers immediately to stop counting
+  clearInterval(intervalStartTimer);
+  clearInterval(intervalInvisibility);
+  clearInterval(intervalTimeElapsed);
+  
   winGame.style.display = "flex"
   gameOverDiv.style.display = "none";
   canvasDiv.style.display = "none";
@@ -296,12 +361,18 @@ const winningGame = () => {
   gameSong.pause();
   winGameSong.play();
   let score = document.querySelector("#score")
- score.innerHTML = `Your winning time is : ${winningTimer} seconds!`
+  score.innerHTML = `Your winning time is : ${winningTimer} seconds!`
   cancelAnimationFrame(gameId)
 }
 
 const gameOver =  () => {
   isGameOver = true
+  
+  // Clear all timers immediately
+  clearInterval(intervalStartTimer);
+  clearInterval(intervalInvisibility);
+  clearInterval(intervalTimeElapsed);
+  
   gameOverDiv.style.display = "flex";
   canvasDiv.style.display = "none";
   restartBtn.style.display = "block"
@@ -310,201 +381,292 @@ const gameOver =  () => {
   gameSong.pause()
   gameOverSong.play()
   cancelAnimationFrame(gameId)
-  
 }
 
 const addSpirits = () => {
-  const nextSpirits = spirits.filter( spirit => spirit.x < canvas.width && spirit.y > 200 && spirit.y < 750)
+  // Filter and return unused spirits to pool
+  const activeSpirits = [];
+  spirits.forEach(spirit => {
+    if (spirit.x > -spiritWidth && spirit.y > 200 && spirit.y < 750) {
+      activeSpirits.push(spirit);
+    } else {
+      returnToPool(spiritPool, spirit);
+    }
+  });
 
-
-  if (gameId % 80 === 0) {
-      nextSpirits.push(new SpiritsClass())
+  spiritSpawnTimer++;
+  if (spiritSpawnTimer >= 80) {
+    const newSpirit = getFromPool(spiritPool, SpiritsClass);
+    newSpirit.x = 1400;
+    newSpirit.y = Math.random() * (canvas.height - spiritHeight);
+    activeSpirits.push(newSpirit);
+    spiritSpawnTimer = 0;
   }
   
-  nextSpirits.forEach(spirit => {
-     drawSpirits(spirit.x, spirit.y)
-      spirit.move()
+  const chihiroRect = { x: chihiroX, y: chihiroY, width: chihiroWidth, height: chihiroHeight };
   
-  if (
-    spirit.x + 10 <= chihiroX + chihiroWidth  &&
-    spirit.x  - 20 + spiritWidth >= chihiroX &&
-    spirit.y + 150 <= chihiroY + chihiroHeight &&
-    spirit.y - 30 + spiritHeight  > chihiroY
-  ) {console.log("Game Over");
-    isGameOver = true
-     gameOver();
-     cancelAnimationFrame(gameId);
-  }
-      
-  }) 
+  activeSpirits.forEach(spirit => {
+    drawSpirits(spirit.x, spirit.y);
+    spirit.move();
+    
+    const spiritRect = { x: spirit.x, y: spirit.y, width: spiritWidth, height: spiritHeight };
+    
+    // Use larger margin for spirits to make collision less sensitive
+    if (checkCollision(chihiroRect, spiritRect, 20)) {
+      console.log("Game Over");
+      isGameOver = true;
+      gameOver();
+      cancelAnimationFrame(gameId);
+    }
+  });
   
-  spirits = nextSpirits;
+  spirits = activeSpirits;
 }
 
 const addRadishSpirits = () => {
-  const nextRadishSpirits = radishSpirits.filter( radishSpirit => radishSpirit.x < canvas.width && radishSpirit.y > 200 && radishSpirit.y < 750)
+  const nextRadishSpirits = radishSpirits.filter(radishSpirit => radishSpirit.x > -radishSpiritWidth && radishSpirit.y > 200 && radishSpirit.y < 750);
 
-
-  if (gameId % 100 === 0) {
-      nextRadishSpirits.push(new RadishSpiritsClass())
+  radishSpiritSpawnTimer++;
+  if (radishSpiritSpawnTimer >= 100) {
+    nextRadishSpirits.push(new RadishSpiritsClass());
+    radishSpiritSpawnTimer = 0;
   }
+  
+  const chihiroRect = { x: chihiroX, y: chihiroY, width: chihiroWidth, height: chihiroHeight };
   
   nextRadishSpirits.forEach(radishSpirit => {
-     drawRadishSpirits(radishSpirit.x, radishSpirit.y)
-      radishSpirit.move()
-  
-  if (
-    radishSpirit.x + 10 <= chihiroX + chihiroWidth  &&
-    radishSpirit.x  - 20 + spiritWidth >= chihiroX &&
-    radishSpirit.y + 150 <= chihiroY + chihiroHeight &&
-    radishSpirit.y - 30 + spiritHeight  > chihiroY
-  ) {console.log("Game Over");
-    isGameOver = true
-     gameOver();
-     cancelAnimationFrame(gameId);
-  }
-      
-  }) 
+    drawRadishSpirits(radishSpirit.x, radishSpirit.y);
+    radishSpirit.move();
+    
+    const radishSpiritRect = { x: radishSpirit.x, y: radishSpirit.y, width: radishSpiritWidth, height: radishSpiritHeight };
+    
+    // Use larger margin for radish spirits to make collision less sensitive
+    if (checkCollision(chihiroRect, radishSpiritRect, 20)) {
+      console.log("Game Over");
+      isGameOver = true;
+      gameOver();
+      cancelAnimationFrame(gameId);
+    }
+  });
   
   radishSpirits = nextRadishSpirits;
 }
 
 const addFood = () => {
-  let nextFoods = foods.filter( food => food.x < canvas.width && food.y > 170 && food.y < 750)
+  let nextFoods = foods.filter(food => food.x > -foodWidth && food.y > 170 && food.y < 750);
 
-
-  if (gameId % 100 === 0) {
-      nextFoods.push(new FoodsClass())
+  foodSpawnTimer++;
+  if (foodSpawnTimer >= 100) {
+    nextFoods.push(new FoodsClass());
+    foodSpawnTimer = 0;
   }
   
-  nextFoods = nextFoods.map(food => {
-     drawFood(food.x, food.y)
-      food.move()
+  const chihiroRect = { x: chihiroX, y: chihiroY, width: chihiroWidth, height: chihiroHeight };
   
-      if (
-        food.x  <= chihiroX + chihiroWidth  &&
-        food.x  + foodWidth >= chihiroX &&
-        food.y  <= chihiroY + chihiroHeight &&
-        food.y + foodHeight  > chihiroY
-      ) {
-        foodSound.play();
-       invisibilityTimerLeft += 5;
-       
-    } else {
-      return food }
-  }).filter(element => element )  // gets rid of food after consuming it
+  nextFoods = nextFoods.filter(food => {
+    drawFood(food.x, food.y);
+    food.move();
+    
+    const foodRect = { x: food.x, y: food.y, width: foodWidth, height: foodHeight };
+    
+    // Use smaller margin for food to make it easier to collect
+    if (checkCollision(chihiroRect, foodRect, 5)) {
+      foodSound.play();
+      invisibilityTimerLeft += 5;
+      return false; // Remove food after consumption
+    }
+    return true; // Keep food if not consumed
+  });
+  
   foods = nextFoods;
 }
 
 const addSpecial = () => {
-  let nextSpecials = specialFoods.filter( special => special.x < canvas.width && special.y > 170 && special.y < 750)
+  let nextSpecials = specialFoods.filter(special => special.x > -specialWidth && special.y > 170 && special.y < 750);
 
-
-  if (gameId % 100 === 0) {
-      nextSpecials.push(new SpecialsClass());
+  specialSpawnTimer++;
+  if (specialSpawnTimer >= 100) {
+    nextSpecials.push(new SpecialsClass());
+    specialSpawnTimer = 0;
   }
   
-  nextSpecials = nextSpecials.map(special => {
-     drawSpecialFood(special.x, special.y)
-      special.move()
+  const chihiroRect = { x: chihiroX, y: chihiroY, width: chihiroWidth, height: chihiroHeight };
   
-     if (
-        special.x <= chihiroX + chihiroWidth  &&
-        special.x + specialWidth >= chihiroX &&
-        special.y <= chihiroY + chihiroHeight &&
-        special.y  + specialHeight  > chihiroY
-      ) {
-        yummy.play()
-        timeLeft -= 5;
-      }  else {
-        return special }
-      
-  }).filter(element => element) // gets rid of special food after consuming it.
+  nextSpecials = nextSpecials.filter(special => {
+    drawSpecialFood(special.x, special.y);
+    special.move();
+    
+    const specialRect = { x: special.x, y: special.y, width: specialWidth, height: specialHeight };
+    
+    // Use smaller margin for special food to make it easier to collect
+    if (checkCollision(chihiroRect, specialRect, 5)) {
+      yummy.play();
+      timeLeft -= 5;
+      return false; // Remove special food after consumption
+    }
+    return true; // Keep special food if not consumed
+  });
   
   specialFoods = nextSpecials;
 }
 
-const animate = () => {
-backgroundDraw()
-drawTime()
-drawInvisibility();
-drawChihiro();
-movePlayer();
-addSpirits()
-addRadishSpirits()
-addFood()
-addSpecial()
-
-if (isGamePaused) {
-drawGamePaused()
-}
-
- if (isGameOver) {
-  console.log(winningTimer);
-  clearInterval(intervalId)
-  }
-
-
-
-
-if (timeLeft <= 0) {
-    winningGame()
-    cancelAnimationFrame(gameId)
+const animate = (currentTime = 0) => {
+  const deltaTime = currentTime - lastTime;
+  
+  if (deltaTime >= frameTime) {
+    // Clear canvas for better performance
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-  } else if (invisibilityTimerLeft === 0) {
-    gameOver()
-    cancelAnimationFrame(gameId)
-   
-  } else if (isGameOver) {
-    cancelAnimationFrame(gameId)
+    backgroundDraw();
+    drawTime();
+    drawInvisibility();
+    drawChihiro();
+    movePlayer();
+    addSpirits();
+    addRadishSpirits();
+    addFood();
+    addSpecial();
+
+    if (isGamePaused) {
+      drawGamePaused();
+    }
+
+    if (isGameOver) {
+      console.log(winningTimer);
+      clearInterval(intervalStartTimer);
+      clearInterval(intervalInvisibility);
+      clearInterval(intervalTimeElapsed);
+    }
+
+    if (timeLeft <= 0) {
+      winningGame();
+      cancelAnimationFrame(gameId);
+    } else if (invisibilityTimerLeft === 0) {
+      gameOver();
+      cancelAnimationFrame(gameId);
+    } else if (isGameOver) {
+      cancelAnimationFrame(gameId);
+    } else if (!isGamePaused) {
+      lastTime = currentTime;
+    }
   }
-  else if (!isGamePaused) {
-    gameId = requestAnimationFrame(animate)
-}
+  
+  if (!isGamePaused && !isGameOver) {
+    gameId = requestAnimationFrame(animate);
+  }
 }
 
+
+const resetGame = () => {
+  // Reset all game variables
+  isGameOver = false;
+  gameId = 0;
+  invisibilityTimerLeft = 15;
+  winningTimer = 0;
+  timeLeft = 60;
+  bgx = 0;
+  bgx2 = canvas.width;
+  isGamePaused = false;
+  lastTime = 0;
+  
+  // Reset spawn timers
+  spiritSpawnTimer = 0;
+  radishSpiritSpawnTimer = 0;
+  foodSpawnTimer = 0;
+  specialSpawnTimer = 0;
+  
+  // Reset player position
+  chihiroX = 20;
+  chihiroY = 530;
+  
+  // Reset movement flags
+  isMovingUp = false;
+  isMovingDown = false;
+  isMovingRight = false;
+  isMovingLeft = false;
+  
+  // Clear all arrays
+  spirits = [];
+  radishSpirits = [];
+  foods = [];
+  specialFoods = [];
+  
+  // Clear all intervals
+  clearInterval(intervalStartTimer);
+  clearInterval(intervalInvisibility);
+  clearInterval(intervalTimeElapsed);
+}
 
 function startGame() {
-splashSong.pause();
-gameSong.play();
-startScreen.style.display = "none";
-canvasDiv.style.display = "flex";
-canvas.style.display = "block";
-startBtn.style.display = "none";
-restartBtn.style.display = "none";
-gameOverDiv.style.display = "none";
-soundBtn.style.display = "none";
-muteBtn.style.display = "block";
-pauseBtn.style.display ="block"
-titleText.style.display = "none";
-winGame.style.display = "none";
-timeElapsed(); 
-animate();
-startTimer();
-invisibilityTimer();
+  resetGame();
+  splashSong.pause();
+  gameSong.play();
+  startScreen.style.display = "none";
+  canvasDiv.style.display = "flex";
+  canvas.style.display = "block";
+  startBtn.style.display = "none";
+  restartBtn.style.display = "none";
+  gameOverDiv.style.display = "none";
+  soundBtn.style.display = "none";
+  muteBtn.style.display = "block";
+  pauseBtn.style.display = "block";
+  titleText.style.display = "none";
+  winGame.style.display = "none";
+  timeElapsed();
+  startTimer();
+  invisibilityTimer();
+  lastTime = performance.now();
+  animate();
 
  
 
 
 
 
-document.addEventListener('keydown', event => {
-    if (event.code === 'ArrowUp') {
-      isMovingUp = true;
-    } else if (event.code === 'ArrowDown') {
-      isMovingDown = true;
-    } else if (event.code === 'ArrowRight') {
-      isMovingRight = true;
-    } else if (event.code === 'ArrowLeft') {
-      isMovingLeft = true;
+  // Optimized keyboard input handlers
+  document.addEventListener('keydown', event => {
+    if (isGamePaused || isGameOver) return;
+    
+    switch(event.code) {
+      case 'ArrowUp':
+        event.preventDefault(); // Prevent page scrolling
+        if (!isMovingUp) isMovingUp = true;
+        break;
+      case 'ArrowDown':
+        event.preventDefault(); // Prevent page scrolling
+        if (!isMovingDown) isMovingDown = true;
+        break;
+      case 'ArrowRight':
+        event.preventDefault(); // Prevent page scrolling
+        if (!isMovingRight) isMovingRight = true;
+        break;
+      case 'ArrowLeft':
+        event.preventDefault(); // Prevent page scrolling
+        if (!isMovingLeft) isMovingLeft = true;
+        break;
     }
-  })
-  document.addEventListener('keyup', () => {
-    isMovingUp = false;
-    isMovingDown = false;
-    isMovingRight = false;
-    isMovingLeft = false;
-  })
+  });
+  
+  document.addEventListener('keyup', event => {
+    switch(event.code) {
+      case 'ArrowUp':
+        event.preventDefault(); // Prevent page scrolling
+        isMovingUp = false;
+        break;
+      case 'ArrowDown':
+        event.preventDefault(); // Prevent page scrolling
+        isMovingDown = false;
+        break;
+      case 'ArrowRight':
+        event.preventDefault(); // Prevent page scrolling
+        isMovingRight = false;
+        break;
+      case 'ArrowLeft':
+        event.preventDefault(); // Prevent page scrolling
+        isMovingLeft = false;
+        break;
+    }
+  });
 
 }
 
@@ -531,10 +693,10 @@ window.addEventListener("load", () => {
     soundBtn.addEventListener("click", () => {
       if (soundBtn.innerHTML === "Play Music") {
         soundBtn.innerHTML = "Stop Music";
-      splashSong.play()
+        splashSong.play()
       } else {
         soundBtn.innerHTML = "Play Music";
-      splashSong.pause()
+        splashSong.pause()
       } 
     }); 
     muteBtn.addEventListener("click", () => {
@@ -547,26 +709,35 @@ window.addEventListener("load", () => {
       }
     })
     pauseBtn.addEventListener("click", () => {
-    if (isGamePaused ) {
-      pauseBtn.innerHTML = "Pause"
-      isGamePaused = false;
-      splashSong.pause()
-      gameSong.play()
-      timeElapsed(); // to make the timers resume from they were at.
-      startTimer();  // to make the timers resume from they were at.
-      invisibilityTimer(); // to make the timers resume from they were at.
-      animate()
-    } else {
-      pauseBtn.innerHTML = "Resume"
-      isGamePaused = true;
-      gameSong.pause()
-      splashSong.play()
-      drawGamePaused();
-      clearInterval(intervalStartTimer);  // to make the timers to stop counting the time.
-      clearInterval(intervalInvisibility); // // to make the timers to stop counting the time.
-      clearInterval(intervalTimeElapsed); // // to make the timers to stop counting the time.
-    }
-    })
+      if (isGamePaused) {
+        pauseBtn.innerHTML = "Pause";
+        isGamePaused = false;
+        splashSong.pause();
+        gameSong.play();
+        timeElapsed();
+        startTimer();
+        invisibilityTimer();
+        lastTime = performance.now(); // Reset timing for smooth resume
+        animate();
+      } else {
+        pauseBtn.innerHTML = "Resume";
+        isGamePaused = true;
+        gameSong.pause();
+        splashSong.play();
+        clearInterval(intervalStartTimer);
+        clearInterval(intervalInvisibility);
+        clearInterval(intervalTimeElapsed);
+      }
+    });
+    
+    // Update sound button text to reflect that music is already playing
+    setTimeout(() => {
+      if (!splashSong.paused) {
+        soundBtn.innerHTML = "Stop Music";
+      } else {
+        soundBtn.innerHTML = "Play Music";
+      }
+    }, 500);
 });
 
 
