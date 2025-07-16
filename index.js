@@ -20,11 +20,15 @@ let pauseBtn = document.querySelector("#pause");
 
 //sounds
 const splashSong = new Audio("./sounds/Start song One Summer's Day.mp3");
+splashSong.loop = true;
+splashSong.volume = 0.5;
 const gameSong = new Audio('./sounds/Soot balls Spirited Away - Joe Hisaishi.mp3');
+gameSong.loop = true;
 gameSong.volume = 0.2;
 const gameOverSong = new Audio ("./sounds/The Bottomless Pit - Joe Hisaishi.mp3");
 gameOverSong.volume = 0.1;
 const winGameSong = new Audio("./sounds/Joe Hisaishi - Always With Me (Spirited Away 2002).mp3");
+winGameSong.volume = 0.3;
 const foodSound = new Audio ("./sounds/Slurp - Sound Effect (HD).mp3");
 foodSound.volume = 0.1;
 const yummy = new Audio ("./sounds/Yummy sound effect.mp3");
@@ -77,9 +81,8 @@ let intervalStartTimer = 0;
 
 // Performance optimization variables
 let lastTime = 0;
-const settings = getOptimalSettings();
-const targetFPS = settings.fps;
-const frameTime = 1000 / targetFPS;
+let targetFPS = 60;
+let frameTime = 1000 / targetFPS;
 let spiritSpawnTimer = 0;
 let radishSpiritSpawnTimer = 0;
 let foodSpawnTimer = 0;
@@ -126,11 +129,29 @@ let specialY = 280
 
 // Create Functions for the game
 const splashScreen = () => {
-  canvas.style.display = "none"
+  // Stop all audio first
+  splashSong.pause();
+  gameSong.pause();
+  gameOverSong.pause();
+  winGameSong.pause();
+  
+  // Reset display states
+  canvas.style.display = "none";
   gameOverDiv.style.display = "none";
   winGame.style.display = "none";
+  startScreen.style.display = "flex";
+  canvasDiv.style.display = "none";
+  titleText.style.display = "block";
+  
+  // Show splash screen buttons
+  startBtn.style.display = "block";
+  soundBtn.style.display = "block";
+  
+  // Hide game-only buttons
   muteBtn.style.display = "none";
   pauseBtn.style.display = "none";
+  restartBtn.style.display = "none";
+  winBtn.style.display = "none";
   
   // Hide the side buttons container on splash screen
   const sideButtonsContainer = document.querySelector("#side-buttons");
@@ -140,30 +161,40 @@ const splashScreen = () => {
   
   const clickToStart = document.querySelector("#click-to-start");
   
+  // Reset sound button text
+  soundBtn.innerHTML = "Play Music";
+  
   // Try to auto-play splash screen music
-  splashSong.play().then(() => {
-    // Music started successfully
-    soundBtn.innerHTML = "Stop Music";
-    if (clickToStart) clickToStart.style.display = "none";
-  }).catch(error => {
-    console.log("Autoplay blocked by browser, will start on user interaction");
-    // Show click prompt
-    if (clickToStart) clickToStart.style.display = "block";
-    
-    // Add one-time click listener to start music on first user interaction
-    const startMusicOnInteraction = () => {
-      splashSong.play();
+  splashSong.currentTime = 0; // Reset to beginning
+  const playPromise = splashSong.play();
+  
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      // Music started successfully
       soundBtn.innerHTML = "Stop Music";
       if (clickToStart) clickToStart.style.display = "none";
-      document.removeEventListener('click', startMusicOnInteraction);
-      document.removeEventListener('keydown', startMusicOnInteraction);
-      document.removeEventListener('touchstart', startMusicOnInteraction);
-    };
-    
-    document.addEventListener('click', startMusicOnInteraction);
-    document.addEventListener('keydown', startMusicOnInteraction);
-    document.addEventListener('touchstart', startMusicOnInteraction);
-  });
+    }).catch(error => {
+      console.log("Autoplay blocked by browser, will start on user interaction");
+      // Show click prompt
+      if (clickToStart) clickToStart.style.display = "block";
+      
+      // Add one-time click listener to start music on first user interaction
+      const startMusicOnInteraction = () => {
+        splashSong.currentTime = 0;
+        splashSong.play().then(() => {
+          soundBtn.innerHTML = "Stop Music";
+          if (clickToStart) clickToStart.style.display = "none";
+        });
+        document.removeEventListener('click', startMusicOnInteraction);
+        document.removeEventListener('keydown', startMusicOnInteraction);
+        document.removeEventListener('touchstart', startMusicOnInteraction);
+      };
+      
+      document.addEventListener('click', startMusicOnInteraction);
+      document.addEventListener('keydown', startMusicOnInteraction);
+      document.addEventListener('touchstart', startMusicOnInteraction);
+    });
+  }
 }
 
 
@@ -372,12 +403,24 @@ const winningGame = () => {
   clearInterval(intervalInvisibility);
   clearInterval(intervalTimeElapsed);
   
-  winGame.style.display = "flex"
+  // Hide other screens
+  startScreen.style.display = "none";
   gameOverDiv.style.display = "none";
   canvasDiv.style.display = "none";
-  restartBtn.style.display = "center"
-  pauseBtn.style.display = "none"
-  muteBtn.style.display = "none"
+  titleText.style.display = "none";
+  
+  // Show win screen
+  winGame.style.display = "flex";
+  
+  // Show win screen button
+  winBtn.style.display = "block";
+  
+  // Hide game buttons
+  startBtn.style.display = "none";
+  soundBtn.style.display = "none";
+  restartBtn.style.display = "none";
+  pauseBtn.style.display = "none";
+  muteBtn.style.display = "none";
   
   // Hide the side buttons container
   const sideButtonsContainer = document.querySelector("#side-buttons");
@@ -400,11 +443,24 @@ const gameOver =  () => {
   clearInterval(intervalInvisibility);
   clearInterval(intervalTimeElapsed);
   
-  gameOverDiv.style.display = "flex";
+  // Hide other screens
+  startScreen.style.display = "none";
+  winGame.style.display = "none";
   canvasDiv.style.display = "none";
-  restartBtn.style.display = "block"
-  pauseBtn.style.display = "none"
-  muteBtn.style.display = "none"
+  titleText.style.display = "none";
+  
+  // Show game over screen
+  gameOverDiv.style.display = "flex";
+  
+  // Show restart button
+  restartBtn.style.display = "block";
+  
+  // Hide other buttons
+  startBtn.style.display = "none";
+  soundBtn.style.display = "none";
+  winBtn.style.display = "none";
+  pauseBtn.style.display = "none";
+  muteBtn.style.display = "none";
   
   // Hide the side buttons container
   const sideButtonsContainer = document.querySelector("#side-buttons");
@@ -676,21 +732,66 @@ const resetGame = () => {
   clearInterval(intervalTimeElapsed);
 }
 
+// Add user interaction flag for audio
+let userHasInteracted = false;
+
+// Function to enable audio after user interaction
+const enableAudio = () => {
+  if (!userHasInteracted) {
+    userHasInteracted = true;
+    console.log("User interaction detected, audio enabled");
+    
+    // Try to play a silent sound to unlock audio context
+    const silentAudio = new Audio();
+    silentAudio.volume = 0;
+    silentAudio.play().catch(() => {});
+    
+    // Remove the interaction listeners
+    document.removeEventListener('click', enableAudio);
+    document.removeEventListener('keydown', enableAudio);
+    document.removeEventListener('touchstart', enableAudio);
+  }
+};
+
+// Add interaction listeners
+document.addEventListener('click', enableAudio);
+document.addEventListener('keydown', enableAudio);
+document.addEventListener('touchstart', enableAudio);
+
 function startGame() {
   resetGame();
+  
+  // Stop splash music and start game music
   splashSong.pause();
-  gameSong.play();
+  gameSong.currentTime = 0;
+  gameSong.play().catch(error => {
+    console.log("Game music failed to play:", error);
+  });
+  
+  // Update performance settings
+  const settings = getOptimalSettings();
+  targetFPS = settings.fps;
+  frameTime = 1000 / targetFPS;
+  
+  // Hide other screens
   startScreen.style.display = "none";
+  gameOverDiv.style.display = "none";
+  winGame.style.display = "none";
+  titleText.style.display = "none";
+  
+  // Show game screen
   canvasDiv.style.display = "flex";
   canvas.style.display = "block";
+  
+  // Hide splash screen buttons
   startBtn.style.display = "none";
-  restartBtn.style.display = "none";
-  gameOverDiv.style.display = "none";
   soundBtn.style.display = "none";
+  restartBtn.style.display = "none";
+  winBtn.style.display = "none";
+  
+  // Show game control buttons
   muteBtn.style.display = "block";
   pauseBtn.style.display = "block";
-  titleText.style.display = "none";
-  winGame.style.display = "none";
   
   // Show the side buttons container
   const sideButtonsContainer = document.querySelector("#side-buttons");
@@ -830,46 +931,90 @@ window.addEventListener('resize', () => {
 });
 
 window.addEventListener("load", () => {
- splashScreen()
-    startBtn.addEventListener("click", () => {
-      startGame()
-    });
+  console.log("Window loaded, initializing game...");
   
-    winBtn.addEventListener("click", () => {
-      gameOverSong.pause()
-      winGameSong.pause()
-      location.reload()
+  // Initialize the splash screen
+  splashScreen();
+  
+  // Add event listeners for buttons with error handling
+  if (startBtn) {
+    startBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("Start button clicked");
+      startGame();
     });
+  }
+  
+  if (winBtn) {
+    winBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("Win button clicked");
+      gameOverSong.pause();
+      winGameSong.pause();
+      location.reload();
+    });
+  }
 
-    restartBtn.addEventListener("click", () => {
-      gameOverSong.pause()
-      winGameSong.pause()
-      location.reload()
+  if (restartBtn) {
+    restartBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("Restart button clicked");
+      gameOverSong.pause();
+      winGameSong.pause();
+      location.reload();
     });
-    soundBtn.addEventListener("click", () => {
+  }
+  
+  if (soundBtn) {
+    soundBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("Sound button clicked");
       if (soundBtn.innerHTML === "Play Music") {
         soundBtn.innerHTML = "Stop Music";
-        splashSong.play()
+        splashSong.currentTime = 0;
+        splashSong.play().catch(error => {
+          console.log("Failed to play splash music:", error);
+        });
       } else {
         soundBtn.innerHTML = "Play Music";
-        splashSong.pause()
+        splashSong.pause();
       } 
-    }); 
-    muteBtn.addEventListener("click", () => {
+    });
+  }
+  
+  if (muteBtn) {
+    muteBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("Mute button clicked");
       if (muteBtn.innerHTML === "Mute") {
         muteBtn.innerHTML = "Sound";
         gameSong.pause();
       } else {
         muteBtn.innerHTML = "Mute";
-        gameSong.play();
+        gameSong.play().catch(error => {
+          console.log("Failed to play game music:", error);
+        });
       }
-    })
-    pauseBtn.addEventListener("click", () => {
+    });
+  }
+  
+  if (pauseBtn) {
+    pauseBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("Pause button clicked");
       if (isGamePaused) {
         pauseBtn.innerHTML = "Pause";
         isGamePaused = false;
         splashSong.pause();
-        gameSong.play();
+        gameSong.play().catch(error => {
+          console.log("Failed to resume game music:", error);
+        });
         timeElapsed();
         startTimer();
         invisibilityTimer();
@@ -879,21 +1024,24 @@ window.addEventListener("load", () => {
         pauseBtn.innerHTML = "Resume";
         isGamePaused = true;
         gameSong.pause();
-        splashSong.play();
+        splashSong.play().catch(error => {
+          console.log("Failed to play splash music:", error);
+        });
         clearInterval(intervalStartTimer);
         clearInterval(intervalInvisibility);
         clearInterval(intervalTimeElapsed);
       }
     });
+  }
     
-    // Update sound button text to reflect that music is already playing
-    setTimeout(() => {
-      if (!splashSong.paused) {
-        soundBtn.innerHTML = "Stop Music";
-      } else {
-        soundBtn.innerHTML = "Play Music";
-      }
-    }, 500);
+  // Update sound button text to reflect that music is already playing
+  setTimeout(() => {
+    if (soundBtn && !splashSong.paused) {
+      soundBtn.innerHTML = "Stop Music";
+    } else if (soundBtn) {
+      soundBtn.innerHTML = "Play Music";
+    }
+  }, 500);
 });
 
 

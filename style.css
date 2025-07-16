@@ -97,6 +97,13 @@
   cursor: pointer;
   z-index: 100;
   position: relative;
+  display: block;
+  pointer-events: auto;
+}
+
+#start-button:hover {
+  transform: scale(1.05);
+  transition: transform 0.1s ease;
 }
 
 #start-button:active {
@@ -121,6 +128,13 @@
   cursor: pointer;
   z-index: 100;
   position: relative;
+  display: block;
+  pointer-events: auto;
+}
+
+#sound:hover {
+  transform: scale(1.05);
+  transition: transform 0.1s ease;
 }
 
 #sound:active {
@@ -258,6 +272,9 @@ button {
     touch-action: manipulation;
     pointer-events: auto;
     cursor: pointer;
+    border: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* Ensure splash screen buttons are clickable */
@@ -267,6 +284,22 @@ button {
     cursor: pointer;
     z-index: 100;
     position: relative;
+    border: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Ensure all game buttons are clickable */
+#start-button, #sound, #mute, #restart, #win-start, #pause {
+    touch-action: manipulation !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 100 !important;
+    position: relative !important;
+    border: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    display: block !important;
 }
 
 /* Blinking animation for click to start text */
@@ -581,7 +614,7 @@ button {
 }
 
 /* Enhanced touch controls for landscape */
-@media (orientation: landscape) {
+@media (orientation: landscape) and (max-width: 932px) {
     body {
         touch-action: manipulation; /* Keep consistent with portrait */
     }
@@ -602,7 +635,7 @@ button {
         width: 100vw;
     }
     
-    /* Adjust side buttons for landscape - only when game is active */
+    /* Adjust side buttons for landscape - only when game is active and on mobile */
     #side-buttons {
         position: fixed;
         bottom: 5px;
@@ -611,6 +644,22 @@ button {
         transform: none;
         flex-direction: column;
         gap: 5px;
+    }
+}
+
+/* Desktop/larger screens - keep side buttons centered below canvas */
+@media (min-width: 933px) {
+    #side-buttons {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: none; /* Hidden by default */
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        z-index: 1000;
     }
 }
 
@@ -632,6 +681,19 @@ button {
 }
 
 @media (max-width: 768px) {
+    .desktop-controls {
+        display: none;
+    }
+    
+    .mobile-controls {
+        display: inline;
+        color: yellow;
+        font-weight: bold;
+    }
+}
+
+/* Ensure mobile controls stay visible in landscape mode */
+@media (orientation: landscape) and (max-width: 932px) {
     .desktop-controls {
         display: none;
     }
