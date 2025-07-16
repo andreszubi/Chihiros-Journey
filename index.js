@@ -294,8 +294,11 @@ const backgroundDraw = () => {
 
 const drawTime = () => {
   ctx.fillStyle = "black";
-  ctx.font = "30px sans-serif";
-  ctx.fillText(`Time left to win: ${timeLeft}s `, 200, 70);
+  const fontSize = window.innerWidth < 768 ? "16px" : "30px";
+  ctx.font = `${fontSize} sans-serif`;
+  const text = window.innerWidth < 768 ? `Time: ${timeLeft}s` : `Time left to win: ${timeLeft}s`;
+  const xPos = window.innerWidth < 768 ? 20 : 200;
+  ctx.fillText(text, xPos, 50);
 }
 
 const timeElapsed = () => {
@@ -326,14 +329,22 @@ const invisibilityTimer = () => {
 
 const drawInvisibility = () => {
   ctx.fillStyle = "black";
-  ctx.font = "30px sans-serif";
-  ctx.fillText(`Invisibility time left: ${invisibilityTimerLeft}s `, 700, 70);
+  const fontSize = window.innerWidth < 768 ? "16px" : "30px";
+  ctx.font = `${fontSize} sans-serif`;
+  const text = window.innerWidth < 768 ? `Invisibility: ${invisibilityTimerLeft}s` : `Invisibility time left: ${invisibilityTimerLeft}s`;
+  const xPos = window.innerWidth < 768 ? 20 : 700;
+  const yPos = window.innerWidth < 768 ? 80 : 70;
+  ctx.fillText(text, xPos, yPos);
 }
 
 const drawGamePaused = () => {
   ctx.fillStyle = "red";
-  ctx.font = "150px sans-serif";
-  ctx.fillText("Game Paused", 260, 400);
+  const fontSize = window.innerWidth < 768 ? "60px" : "150px";
+  ctx.font = `${fontSize} sans-serif`;
+  const text = "Game Paused";
+  const xPos = window.innerWidth < 768 ? 50 : 260;
+  const yPos = window.innerWidth < 768 ? 200 : 400;
+  ctx.fillText(text, xPos, yPos);
 }
 
 // Optimized collision detection helper function with collision margins
