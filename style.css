@@ -79,6 +79,8 @@
     padding-top: 30px;
     gap: 30px;
     flex-wrap: wrap;
+    z-index: 50;
+    position: relative;
 }
 
 #start-button {
@@ -92,6 +94,9 @@
   margin-right: 20px;
   min-width: 150px;
   min-height: 150px;
+  cursor: pointer;
+  z-index: 100;
+  position: relative;
 }
 
 #start-button:active {
@@ -113,6 +118,9 @@
   margin-right: 20px;
   min-width: 150px;
   min-height: 150px;
+  cursor: pointer;
+  z-index: 100;
+  position: relative;
 }
 
 #sound:active {
@@ -212,7 +220,7 @@
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
+  display: none; /* Hidden by default */
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -243,6 +251,22 @@ body {
     user-select: none; /* Prevent text selection */
     -webkit-user-select: none;
     -webkit-touch-callout: none;
+}
+
+/* Allow clicks on buttons */
+button {
+    touch-action: manipulation;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Ensure splash screen buttons are clickable */
+#splash-screen button {
+    touch-action: manipulation;
+    pointer-events: auto;
+    cursor: pointer;
+    z-index: 100;
+    position: relative;
 }
 
 /* Blinking animation for click to start text */
@@ -559,7 +583,7 @@ body {
 /* Enhanced touch controls for landscape */
 @media (orientation: landscape) {
     body {
-        touch-action: pan-x pan-y; /* Allow more natural scrolling in landscape */
+        touch-action: manipulation; /* Keep consistent with portrait */
     }
     
     #canvas {
@@ -578,7 +602,7 @@ body {
         width: 100vw;
     }
     
-    /* Adjust side buttons for landscape */
+    /* Adjust side buttons for landscape - only when game is active */
     #side-buttons {
         position: fixed;
         bottom: 5px;

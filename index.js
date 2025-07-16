@@ -132,6 +132,12 @@ const splashScreen = () => {
   muteBtn.style.display = "none";
   pauseBtn.style.display = "none";
   
+  // Hide the side buttons container on splash screen
+  const sideButtonsContainer = document.querySelector("#side-buttons");
+  if (sideButtonsContainer) {
+    sideButtonsContainer.style.display = "none";
+  }
+  
   const clickToStart = document.querySelector("#click-to-start");
   
   // Try to auto-play splash screen music
@@ -372,6 +378,13 @@ const winningGame = () => {
   restartBtn.style.display = "center"
   pauseBtn.style.display = "none"
   muteBtn.style.display = "none"
+  
+  // Hide the side buttons container
+  const sideButtonsContainer = document.querySelector("#side-buttons");
+  if (sideButtonsContainer) {
+    sideButtonsContainer.style.display = "none";
+  }
+  
   gameSong.pause();
   winGameSong.play();
   let score = document.querySelector("#score")
@@ -392,6 +405,13 @@ const gameOver =  () => {
   restartBtn.style.display = "block"
   pauseBtn.style.display = "none"
   muteBtn.style.display = "none"
+  
+  // Hide the side buttons container
+  const sideButtonsContainer = document.querySelector("#side-buttons");
+  if (sideButtonsContainer) {
+    sideButtonsContainer.style.display = "none";
+  }
+  
   gameSong.pause()
   gameOverSong.play()
   cancelAnimationFrame(gameId)
@@ -671,6 +691,13 @@ function startGame() {
   pauseBtn.style.display = "block";
   titleText.style.display = "none";
   winGame.style.display = "none";
+  
+  // Show the side buttons container
+  const sideButtonsContainer = document.querySelector("#side-buttons");
+  if (sideButtonsContainer) {
+    sideButtonsContainer.style.display = "flex";
+  }
+  
   timeElapsed();
   startTimer();
   invisibilityTimer();
@@ -788,12 +815,10 @@ function startGame() {
 // Handle orientation changes
 window.addEventListener('orientationchange', () => {
   setTimeout(() => {
+    // Simple refresh without reload to avoid breaking functionality
     const newSettings = getOptimalSettings();
-    // Update frame rate dynamically
-    const newFrameTime = 1000 / newSettings.fps;
-    
-    // Force a slight delay to ensure proper orientation detection
-    location.reload(); // Reload for best compatibility
+    // Just log the change for now
+    console.log('Orientation changed, new settings:', newSettings);
   }, 100);
 });
 
@@ -801,6 +826,7 @@ window.addEventListener('orientationchange', () => {
 window.addEventListener('resize', () => {
   const newSettings = getOptimalSettings();
   // Update settings when window size changes
+  console.log('Window resized, new settings:', newSettings);
 });
 
 window.addEventListener("load", () => {
