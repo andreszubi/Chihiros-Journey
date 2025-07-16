@@ -26,8 +26,10 @@ const gameSong = new Audio('./sounds/Soot balls Spirited Away - Joe Hisaishi.mp3
 gameSong.loop = true;
 gameSong.volume = 0.2;
 const gameOverSong = new Audio ("./sounds/The Bottomless Pit - Joe Hisaishi.mp3");
+gameOverSong.loop = true;
 gameOverSong.volume = 0.1;
 const winGameSong = new Audio("./sounds/Joe Hisaishi - Always With Me (Spirited Away 2002).mp3");
+winGameSong.loop = true;
 winGameSong.volume = 0.3;
 const foodSound = new Audio ("./sounds/Slurp - Sound Effect (HD).mp3");
 foodSound.volume = 0.1;
@@ -81,7 +83,7 @@ let intervalStartTimer = 0;
 
 // Performance optimization variables
 let lastTime = 0;
-let targetFPS = 60;
+let targetFPS = 120;
 let frameTime = 1000 / targetFPS;
 let spiritSpawnTimer = 0;
 let radishSpiritSpawnTimer = 0;
@@ -632,7 +634,7 @@ const getOptimalSettings = () => {
     radishSpawnRate: isMobile ? 120 : 100,
     foodSpawnRate: isMobile ? 140 : 120,
     specialSpawnRate: isMobile ? 220 : 200,
-    fps: 60 // Set to 60 FPS for all devices
+    fps: 120 // Set to 120 FPS for all devices
   };
 }
 
@@ -727,6 +729,12 @@ const resetGame = () => {
   clearInterval(intervalStartTimer);
   clearInterval(intervalInvisibility);
   clearInterval(intervalTimeElapsed);
+  
+  // Stop all audio to prevent music overlap
+  splashSong.pause();
+  gameSong.pause();
+  gameOverSong.pause();
+  winGameSong.pause();
 }
 
 // Add user interaction flag for audio
@@ -777,10 +785,16 @@ function startGame() {
   muteBtn.style.display = "block";
   pauseBtn.style.display = "block";
   
-  // Start game music
+  // Ensure all other music is stopped before starting game music
   splashSong.pause();
+  gameOverSong.pause();
+  winGameSong.pause();
+  
+  // Start game music
   gameSong.currentTime = 0;
-  gameSong.play();
+  gameSong.play().catch(error => {
+    console.log("Game music autoplay failed:", error);
+  });
   
   // Start game timers
   startTimer();
@@ -921,16 +935,16 @@ canvas.addEventListener("touchend", (e) => {
 // Handle orientation changes
 window.addEventListener('orientationchange', () => {
   setTimeout(() => {
-    // Always use 60 FPS regardless of device
-    targetFPS = 60;
+    // Always use 120 FPS regardless of device
+    targetFPS = 120;
     frameTime = 1000 / targetFPS;
   }, 100);
 });
 
 // Also handle resize events for better responsiveness
 window.addEventListener('resize', () => {
-  // Always use 60 FPS regardless of device
-  targetFPS = 60;
+  // Always use 120 FPS regardless of device
+  targetFPS = 120;
   frameTime = 1000 / targetFPS;
 });
 
