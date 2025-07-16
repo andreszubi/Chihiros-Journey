@@ -239,6 +239,10 @@ body {
     overflow: hidden; /* Prevent scrolling during gameplay */
     height: 100vh;
     width: 100vw;
+    touch-action: manipulation; /* Prevent zoom on mobile */
+    user-select: none; /* Prevent text selection */
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
 /* Blinking animation for click to start text */
@@ -250,59 +254,91 @@ body {
 /* Responsive canvas */
 #canvas {
     max-width: 100vw;
-    max-height: 80vh;
+    max-height: 70vh;
     width: auto;
     height: auto;
     object-fit: contain;
+    border: 2px solid pink !important;
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .title-text {
         font-size: clamp(40px, 10vw, 80px);
-        margin-top: 20px;
+        margin-top: 10px;
     }
     
     .buttons {
         flex-direction: column;
-        padding-top: 100px;
-        gap: 30px;
-    }
-    
-    #start-button, #sound, #mute, #restart, #win-start, #pause {
-        min-width: 120px;
-        min-height: 120px;
-        font-size: clamp(25px, 6vw, 35px);
-        margin-right: 0;
-    }
-    
-    #side-buttons {
-        flex-direction: column;
-        gap: 15px;
-        padding: 10px;
-    }
-    
-    #splash-screen, #game-over, #win-game {
-        padding-top: 50px;
-    }
-    
-    #canvas {
-        max-height: 70vh;
-    }
-}
-
-@media (max-width: 480px) {
-    .title-text {
-        font-size: clamp(30px, 12vw, 60px);
+        padding-top: 80px;
+        gap: 25px;
     }
     
     #start-button, #sound, #mute, #restart, #win-start, #pause {
         min-width: 100px;
         min-height: 100px;
-        font-size: clamp(20px, 8vw, 30px);
+        font-size: clamp(20px, 5vw, 30px);
+        margin-right: 0;
+        padding: clamp(15px, 2vw, 20px);
+    }
+    
+    #side-buttons {
+        flex-direction: row;
+        gap: 15px;
+        padding: 10px;
+        bottom: 10px;
+    }
+    
+    #splash-screen, #game-over, #win-game {
+        padding-top: 30px;
     }
     
     #canvas {
         max-height: 60vh;
+        max-width: 95vw;
+    }
+    
+    #game {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .title-text {
+        font-size: clamp(25px, 12vw, 50px);
+        margin-top: 5px;
+    }
+    
+    #start-button, #sound, #mute, #restart, #win-start, #pause {
+        min-width: 80px;
+        min-height: 80px;
+        font-size: clamp(16px, 6vw, 24px);
+        padding: clamp(10px, 1.5vw, 15px);
+    }
+    
+    #canvas {
+        max-height: 50vh;
+        max-width: 90vw;
+    }
+    
+    #side-buttons {
+        bottom: 5px;
+        gap: 10px;
+    }
+    
+    #splash-screen h2 {
+        font-size: clamp(20px, 5vw, 30px);
+        padding-top: 20px;
+    }
+    
+    #splash-screen h3 {
+        font-size: clamp(14px, 4vw, 18px);
+        padding: 10px;
+        line-height: 1.3;
+    }
+    
+    #game-over, #win-game {
+        font-size: clamp(16px, 4vw, 20px);
+        padding-top: 20px;
     }
 }

@@ -622,7 +622,6 @@ function startGame() {
 
 
 
-
   // Optimized keyboard input handlers
   document.addEventListener('keydown', event => {
     if (isGamePaused || isGameOver) return;
@@ -667,11 +666,65 @@ function startGame() {
         break;
     }
   });
+  
+  // Touch controls for mobile devices
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+  
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    if (isGamePaused || isGameOver) return;
+    
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  });
+  
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (isGamePaused || isGameOver) return;
+    
+    touchEndX = e.touches[0].clientX;
+    touchEndY = e.touches[0].clientY;
+    
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    
+    // Reset movement flags
+    isMovingUp = false;
+    isMovingDown = false;
+    isMovingLeft = false;
+    isMovingRight = false;
+    
+    // Determine direction based on touch movement
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // Horizontal movement
+      if (deltaX > 10) {
+        isMovingRight = true;
+      } else if (deltaX < -10) {
+        isMovingLeft = true;
+      }
+    } else if (deltaY > 10) {
+      // Vertical movement - down
+      isMovingDown = true;
+    } else if (deltaY < -10) {
+      // Vertical movement - up
+      isMovingUp = true;
+    }
+  });
+  
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    
+    // Stop all movement when touch ends
+    isMovingUp = false;
+    isMovingDown = false;
+    isMovingLeft = false;
+    isMovingRight = false;
+  });
 
 }
-
-
-
 
 window.addEventListener("load", () => {
  splashScreen()
