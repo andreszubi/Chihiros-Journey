@@ -622,17 +622,19 @@ const getOptimalSettings = () => {
   
   if (isMobile) {
     if (landscape) {
-      fps = 25;
-      moveSpeed = 6;
-      bgSpeed = 0.5;
-      spiritSpawnRate = 130;
-      radishSpawnRate = 150;
-    } else {
+      // Better performance for landscape mobile
       fps = 30;
-      moveSpeed = 8;
+      moveSpeed = 7;
       bgSpeed = 1;
-      spiritSpawnRate = 100;
-      radishSpawnRate = 120;
+      spiritSpawnRate = 120;
+      radishSpawnRate = 140;
+    } else {
+      // Optimized for portrait mobile - higher FPS for smoother gameplay
+      fps = 45;
+      moveSpeed = 8;
+      bgSpeed = 1.5;
+      spiritSpawnRate = 90;
+      radishSpawnRate = 110;
     }
   }
   
@@ -652,17 +654,23 @@ const animate = (currentTime = 0) => {
     // Clear canvas for better performance
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    backgroundDraw();
-    drawTime();
-    drawInvisibility();
-    drawChihiro();
-    movePlayer();
-    addSpirits();
-    addRadishSpirits();
-    addFood();
-    addSpecial();
-
-    if (isGamePaused) {
+    // Only draw if game is not paused
+    if (!isGamePaused) {
+      backgroundDraw();
+      drawTime();
+      drawInvisibility();
+      drawChihiro();
+      movePlayer();
+      addSpirits();
+      addRadishSpirits();
+      addFood();
+      addSpecial();
+    } else {
+      // Draw minimal content when paused
+      backgroundDraw();
+      drawTime();
+      drawInvisibility();
+      drawChihiro();
       drawGamePaused();
     }
 
