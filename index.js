@@ -77,7 +77,8 @@ let intervalStartTimer = 0;
 
 // Performance optimization variables
 let lastTime = 0;
-const targetFPS = 60;
+const settings = getOptimalSettings();
+const targetFPS = settings.fps;
 const frameTime = 1000 / targetFPS;
 let spiritSpawnTimer = 0;
 let radishSpiritSpawnTimer = 0;
@@ -166,7 +167,8 @@ const drawChihiro = () => {
 
 
 const movePlayer = () => {
-  const moveSpeed = 10;
+  const settings = getOptimalSettings();
+  const moveSpeed = settings.moveSpeed;
   if (isMovingUp && chihiroY > 230) {
     chihiroY -= moveSpeed;
   }
@@ -275,7 +277,8 @@ const drawSpecialFood = (currentSpecialX, currentSpecialY) => {
 
 
 const backgroundDraw = () => {
-  const bgSpeed = 2;
+  const settings = getOptimalSettings();
+  const bgSpeed = settings.bgSpeed;
   
   ctx.drawImage(background, bgx, 0, canvas.width, canvas.height);
   ctx.drawImage(background2, bgx2, 0, canvas.width, canvas.height);
@@ -406,7 +409,9 @@ const addSpirits = () => {
   });
 
   spiritSpawnTimer++;
-  if (spiritSpawnTimer >= 80) {
+  const settings = getOptimalSettings();
+  const spawnRate = settings.spiritSpawnRate;
+  if (spiritSpawnTimer >= spawnRate) {
     const newSpirit = getFromPool(spiritPool, SpiritsClass);
     newSpirit.x = 1400;
     newSpirit.y = Math.random() * (canvas.height - spiritHeight);
@@ -438,7 +443,9 @@ const addRadishSpirits = () => {
   const nextRadishSpirits = radishSpirits.filter(radishSpirit => radishSpirit.x > -radishSpiritWidth && radishSpirit.y > 200 && radishSpirit.y < 750);
 
   radishSpiritSpawnTimer++;
-  if (radishSpiritSpawnTimer >= 100) {
+  const settings = getOptimalSettings();
+  const spawnRate = settings.radishSpawnRate;
+  if (radishSpiritSpawnTimer >= spawnRate) {
     nextRadishSpirits.push(new RadishSpiritsClass());
     radishSpiritSpawnTimer = 0;
   }
@@ -519,6 +526,47 @@ const addSpecial = () => {
   });
   
   specialFoods = nextSpecials;
+}
+
+// Check if device is in landscape mode
+const isLandscape = () => {
+  return window.innerHeight < window.innerWidth;
+}
+
+// Adjust game performance based on orientation
+const getOptimalSettings = () => {
+  const isMobile = window.innerWidth < 768;
+  const landscape = isLandscape();
+  
+  let fps = 60;
+  let moveSpeed = 10;
+  let bgSpeed = 2;
+  let spiritSpawnRate = 80;
+  let radishSpawnRate = 100;
+  
+  if (isMobile) {
+    if (landscape) {
+      fps = 25;
+      moveSpeed = 6;
+      bgSpeed = 0.5;
+      spiritSpawnRate = 130;
+      radishSpawnRate = 150;
+    } else {
+      fps = 30;
+      moveSpeed = 8;
+      bgSpeed = 1;
+      spiritSpawnRate = 100;
+      radishSpawnRate = 120;
+    }
+  }
+  
+  return {
+    fps,
+    moveSpeed,
+    bgSpeed,
+    spiritSpawnRate,
+    radishSpawnRate
+  };
 }
 
 const animate = (currentTime = 0) => {
@@ -736,6 +784,24 @@ function startGame() {
   });
 
 }
+
+// Handle orientation changes
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    const newSettings = getOptimalSettings();
+    // Update frame rate dynamically
+    const newFrameTime = 1000 / newSettings.fps;
+    
+    // Force a slight delay to ensure proper orientation detection
+    location.reload(); // Reload for best compatibility
+  }, 100);
+});
+
+// Also handle resize events for better responsiveness
+window.addEventListener('resize', () => {
+  const newSettings = getOptimalSettings();
+  // Update settings when window size changes
+});
 
 window.addEventListener("load", () => {
  splashScreen()
