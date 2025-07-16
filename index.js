@@ -612,39 +612,35 @@ const isLandscape = () => {
 // Adjust game performance based on orientation
 const getOptimalSettings = () => {
   const isMobile = window.innerWidth < 768;
-  const landscape = isLandscape();
-  
-  let fps = 60;
-  let moveSpeed = 10;
-  let bgSpeed = 2;
-  let spiritSpawnRate = 80;
-  let radishSpawnRate = 100;
-  
-  if (isMobile) {
-    if (landscape) {
-      // Better performance for landscape mobile
-      fps = 30;
-      moveSpeed = 7;
-      bgSpeed = 1;
-      spiritSpawnRate = 120;
-      radishSpawnRate = 140;
-    } else {
-      // Optimized for portrait mobile - higher FPS for smoother gameplay
-      fps = 45;
-      moveSpeed = 8;
-      bgSpeed = 1.5;
-      spiritSpawnRate = 90;
-      radishSpawnRate = 110;
-    }
-  }
   
   return {
-    fps,
-    moveSpeed,
-    bgSpeed,
-    spiritSpawnRate,
-    radishSpawnRate
+    moveSpeed: isMobile ? 8 : 10,
+    bgSpeed: isMobile ? 2 : 3,
+    spiritSpawnRate: isMobile ? 100 : 80,
+    radishSpawnRate: isMobile ? 120 : 100,
+    foodSpawnRate: isMobile ? 140 : 120,
+    specialSpawnRate: isMobile ? 220 : 200,
+    fps: isMobile ? 30 : 60
   };
+}
+
+// Performance optimization helper
+function getDeviceSettings() {
+    const deviceWidth = window.innerWidth;
+    const deviceHeight = window.innerHeight;
+    const isLandscapeMode = deviceWidth > deviceHeight;
+    const isMobileDevice = deviceWidth <= 768;
+    
+    return {
+        fps: isMobileDevice ? 30 : 60,
+        moveSpeed: isMobileDevice ? 3 : 5,
+        bgSpeed: isMobileDevice ? 2 : 3,
+        spiritSpawnRate: isMobileDevice ? 120 : 80,
+        radishSpawnRate: isMobileDevice ? 150 : 100,
+        foodSpawnRate: isMobileDevice ? 180 : 120,
+        specialSpawnRate: isMobileDevice ? 250 : 200,
+        spawnMultiplier: (isMobileDevice && isLandscapeMode) ? 0.8 : 1
+    };
 }
 
 const animate = (currentTime = 0) => {
@@ -753,11 +749,6 @@ const enableAudio = () => {
     const silentAudio = new Audio();
     silentAudio.volume = 0;
     silentAudio.play().catch(() => {});
-    
-    // Remove the interaction listeners
-    document.removeEventListener('click', enableAudio);
-    document.removeEventListener('keydown', enableAudio);
-    document.removeEventListener('touchstart', enableAudio);
   }
 };
 
@@ -769,287 +760,190 @@ document.addEventListener('touchstart', enableAudio);
 function startGame() {
   resetGame();
   
-  // Stop splash music and start game music
-  splashSong.pause();
-  gameSong.currentTime = 0;
-  gameSong.play().catch(error => {
-    console.log("Game music failed to play:", error);
-  });
-  
-  // Update performance settings
-  const settings = getOptimalSettings();
-  targetFPS = settings.fps;
-  frameTime = 1000 / targetFPS;
-  
-  // Hide other screens
+  // Hide all screens except game
   startScreen.style.display = "none";
   gameOverDiv.style.display = "none";
   winGame.style.display = "none";
   titleText.style.display = "none";
   
-  // Show game screen
+  // Show game canvas
   canvasDiv.style.display = "flex";
   canvas.style.display = "block";
   
-  // Hide splash screen buttons
-  startBtn.style.display = "none";
-  soundBtn.style.display = "none";
-  restartBtn.style.display = "none";
-  winBtn.style.display = "none";
-  
-  // Show game control buttons
-  muteBtn.style.display = "block";
-  pauseBtn.style.display = "block";
-  
-  // Show the side buttons container
+  // Show game buttons
   const sideButtonsContainer = document.querySelector("#side-buttons");
   if (sideButtonsContainer) {
     sideButtonsContainer.style.display = "flex";
   }
   
-  timeElapsed();
+  // Hide splash screen buttons
+  startBtn.style.display = "none";
+  soundBtn.style.display = "none";
+  
+  // Show game control buttons
+  muteBtn.style.display = "block";
+  pauseBtn.style.display = "block";
+  
+  // Start game music
+  splashSong.pause();
+  gameSong.currentTime = 0;
+  gameSong.play();
+  
+  // Start game timers
   startTimer();
+  timeElapsed();
   invisibilityTimer();
-  lastTime = performance.now();
-  animate();
-
- 
-
-
-
-  // Optimized keyboard input handlers
-  document.addEventListener('keydown', event => {
-    if (isGamePaused || isGameOver) return;
-    
-    switch(event.code) {
-      case 'ArrowUp':
-        event.preventDefault(); // Prevent page scrolling
-        if (!isMovingUp) isMovingUp = true;
-        break;
-      case 'ArrowDown':
-        event.preventDefault(); // Prevent page scrolling
-        if (!isMovingDown) isMovingDown = true;
-        break;
-      case 'ArrowRight':
-        event.preventDefault(); // Prevent page scrolling
-        if (!isMovingRight) isMovingRight = true;
-        break;
-      case 'ArrowLeft':
-        event.preventDefault(); // Prevent page scrolling
-        if (!isMovingLeft) isMovingLeft = true;
-        break;
-    }
-  });
   
-  document.addEventListener('keyup', event => {
-    switch(event.code) {
-      case 'ArrowUp':
-        event.preventDefault(); // Prevent page scrolling
-        isMovingUp = false;
-        break;
-      case 'ArrowDown':
-        event.preventDefault(); // Prevent page scrolling
-        isMovingDown = false;
-        break;
-      case 'ArrowRight':
-        event.preventDefault(); // Prevent page scrolling
-        isMovingRight = false;
-        break;
-      case 'ArrowLeft':
-        event.preventDefault(); // Prevent page scrolling
-        isMovingLeft = false;
-        break;
-    }
-  });
-  
-  // Touch controls for mobile devices
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let touchEndX = 0;
-  let touchEndY = 0;
-  
-  canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    if (isGamePaused || isGameOver) return;
-    
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-  });
-  
-  canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    if (isGamePaused || isGameOver) return;
-    
-    touchEndX = e.touches[0].clientX;
-    touchEndY = e.touches[0].clientY;
-    
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
-    
-    // Reset movement flags
-    isMovingUp = false;
-    isMovingDown = false;
-    isMovingLeft = false;
-    isMovingRight = false;
-    
-    // Determine direction based on touch movement
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      // Horizontal movement
-      if (deltaX > 10) {
-        isMovingRight = true;
-      } else if (deltaX < -10) {
-        isMovingLeft = true;
-      }
-    } else if (deltaY > 10) {
-      // Vertical movement - down
-      isMovingDown = true;
-    } else if (deltaY < -10) {
-      // Vertical movement - up
-      isMovingUp = true;
-    }
-  });
-  
-  canvas.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    
-    // Stop all movement when touch ends
-    isMovingUp = false;
-    isMovingDown = false;
-    isMovingLeft = false;
-    isMovingRight = false;
-  });
-
+  // Start game loop
+  gameId = requestAnimationFrame(animate);
 }
+
+// Button event listeners
+startBtn.addEventListener("click", startGame);
+restartBtn.addEventListener("click", () => {
+  resetGame();
+  startGame();
+});
+winBtn.addEventListener("click", () => {
+  resetGame();
+  splashScreen();
+});
+
+soundBtn.addEventListener("click", () => {
+  if (splashSong.paused) {
+    splashSong.play();
+    soundBtn.innerHTML = "Stop Music";
+  } else {
+    splashSong.pause();
+    soundBtn.innerHTML = "Play Music";
+  }
+});
+
+muteBtn.addEventListener("click", () => {
+  if (gameSong.paused) {
+    gameSong.play();
+    muteBtn.innerHTML = "Mute";
+  } else {
+    gameSong.pause();
+    muteBtn.innerHTML = "Unmute";
+  }
+});
+
+pauseBtn.addEventListener("click", () => {
+  if (isGamePaused) {
+    isGamePaused = false;
+    gameSong.play();
+    pauseBtn.innerHTML = "Pause";
+    gameId = requestAnimationFrame(animate);
+  } else {
+    isGamePaused = true;
+    gameSong.pause();
+    pauseBtn.innerHTML = "Resume";
+    cancelAnimationFrame(gameId);
+  }
+});
+
+// Keyboard controls
+document.addEventListener("keydown", (e) => {
+  switch (e.key) {
+    case "ArrowUp":
+      isMovingUp = true;
+      break;
+    case "ArrowDown":
+      isMovingDown = true;
+      break;
+    case "ArrowLeft":
+      isMovingLeft = true;
+      break;
+    case "ArrowRight":
+      isMovingRight = true;
+      break;
+  }
+});
+
+document.addEventListener("keyup", (e) => {
+  switch (e.key) {
+    case "ArrowUp":
+      isMovingUp = false;
+      break;
+    case "ArrowDown":
+      isMovingDown = false;
+      break;
+    case "ArrowLeft":
+      isMovingLeft = false;
+      break;
+    case "ArrowRight":
+      isMovingRight = false;
+      break;
+  }
+});
+
+// Touch controls for mobile
+let touchStartX = 0;
+let touchStartY = 0;
+let isDragging = false;
+
+canvas.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  touchStartX = touch.clientX;
+  touchStartY = touch.clientY;
+  isDragging = true;
+});
+
+canvas.addEventListener("touchmove", (e) => {
+  e.preventDefault();
+  if (!isDragging) return;
+  
+  const touch = e.touches[0];
+  const deltaX = touch.clientX - touchStartX;
+  const deltaY = touch.clientY - touchStartY;
+  
+  // Reset all movement flags
+  isMovingUp = false;
+  isMovingDown = false;
+  isMovingLeft = false;
+  isMovingRight = false;
+  
+  // Set movement based on touch direction
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 20) isMovingRight = true;
+    else if (deltaX < -20) isMovingLeft = true;
+  } else if (deltaY > 20) {
+    isMovingDown = true;
+  } else if (deltaY < -20) {
+    isMovingUp = true;
+  }
+});
+
+canvas.addEventListener("touchend", (e) => {
+  e.preventDefault();
+  isDragging = false;
+  isMovingUp = false;
+  isMovingDown = false;
+  isMovingLeft = false;
+  isMovingRight = false;
+});
 
 // Handle orientation changes
 window.addEventListener('orientationchange', () => {
   setTimeout(() => {
-    // Simple refresh without reload to avoid breaking functionality
-    const newSettings = getOptimalSettings();
-    // Just log the change for now
-    console.log('Orientation changed, new settings:', newSettings);
+    // Recalculate canvas size after orientation change
+    const settings = getOptimalSettings();
+    targetFPS = settings.fps || 60;
+    frameTime = 1000 / targetFPS;
   }, 100);
 });
 
 // Also handle resize events for better responsiveness
 window.addEventListener('resize', () => {
-  const newSettings = getOptimalSettings();
-  // Update settings when window size changes
-  console.log('Window resized, new settings:', newSettings);
+  const settings = getOptimalSettings();
+  targetFPS = settings.fps || 60;
+  frameTime = 1000 / targetFPS;
 });
 
 window.addEventListener("load", () => {
-  console.log("Window loaded, initializing game...");
-  
-  // Initialize the splash screen
   splashScreen();
-  
-  // Add event listeners for buttons with error handling
-  if (startBtn) {
-    startBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log("Start button clicked");
-      startGame();
-    });
-  }
-  
-  if (winBtn) {
-    winBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log("Win button clicked");
-      gameOverSong.pause();
-      winGameSong.pause();
-      location.reload();
-    });
-  }
-
-  if (restartBtn) {
-    restartBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log("Restart button clicked");
-      gameOverSong.pause();
-      winGameSong.pause();
-      location.reload();
-    });
-  }
-  
-  if (soundBtn) {
-    soundBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log("Sound button clicked");
-      if (soundBtn.innerHTML === "Play Music") {
-        soundBtn.innerHTML = "Stop Music";
-        splashSong.currentTime = 0;
-        splashSong.play().catch(error => {
-          console.log("Failed to play splash music:", error);
-        });
-      } else {
-        soundBtn.innerHTML = "Play Music";
-        splashSong.pause();
-      } 
-    });
-  }
-  
-  if (muteBtn) {
-    muteBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log("Mute button clicked");
-      if (muteBtn.innerHTML === "Mute") {
-        muteBtn.innerHTML = "Sound";
-        gameSong.pause();
-      } else {
-        muteBtn.innerHTML = "Mute";
-        gameSong.play().catch(error => {
-          console.log("Failed to play game music:", error);
-        });
-      }
-    });
-  }
-  
-  if (pauseBtn) {
-    pauseBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log("Pause button clicked");
-      if (isGamePaused) {
-        pauseBtn.innerHTML = "Pause";
-        isGamePaused = false;
-        splashSong.pause();
-        gameSong.play().catch(error => {
-          console.log("Failed to resume game music:", error);
-        });
-        timeElapsed();
-        startTimer();
-        invisibilityTimer();
-        lastTime = performance.now(); // Reset timing for smooth resume
-        animate();
-      } else {
-        pauseBtn.innerHTML = "Resume";
-        isGamePaused = true;
-        gameSong.pause();
-        splashSong.play().catch(error => {
-          console.log("Failed to play splash music:", error);
-        });
-        clearInterval(intervalStartTimer);
-        clearInterval(intervalInvisibility);
-        clearInterval(intervalTimeElapsed);
-      }
-    });
-  }
-    
-  // Update sound button text to reflect that music is already playing
-  setTimeout(() => {
-    if (soundBtn && !splashSong.paused) {
-      soundBtn.innerHTML = "Stop Music";
-    } else if (soundBtn) {
-      soundBtn.innerHTML = "Play Music";
-    }
-  }, 500);
 });
 
 

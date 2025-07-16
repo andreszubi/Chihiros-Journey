@@ -318,7 +318,43 @@ button {
     border: 2px solid pink !important;
 }
 
-/* Mobile responsiveness */
+/* Mobile game container and canvas */
+@media (max-width: 768px) {
+    #game {
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+    
+    #canvas {
+        max-height: 80vh;
+        width: 95vw;
+        height: auto;
+    }
+    
+    #side-buttons {
+        position: fixed;
+        bottom: 10px;
+    }
+}
+
+/* Landscape mode specific adjustments */
+@media (orientation: landscape) {
+    #game {
+        padding: 0;
+        height: 100vh;
+    }
+    
+    #canvas {
+        max-height: 85vh;
+        width: auto;
+    }
+}
+
 @media (max-width: 768px) {
     .title-text {
         font-size: clamp(30px, 8vw, 60px);
@@ -535,10 +571,6 @@ button {
         gap: 8px;
     }
     
-    #game {
-        padding: 2px;
-    }
-    
     #game-over, #win-game {
         padding-top: 20px;
     }
@@ -702,5 +734,57 @@ button {
         display: inline;
         color: yellow;
         font-weight: bold;
+    }
+}
+
+/* Portrait mode optimization */
+@media (orientation: portrait) {
+    #canvas {
+        max-width: 98vw;
+        max-height: 70vh;
+        margin-top: 10vh;
+    }
+    
+    #game {
+        height: 90vh;
+        overflow: hidden;
+    }
+}
+
+/* Landscape mode optimization */
+@media (orientation: landscape) {
+    #canvas {
+        max-width: 90vw;
+        max-height: 85vh;
+        margin: 0 auto;
+    }
+    
+    #game {
+        height: 100vh;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+    
+    .title-text {
+        font-size: clamp(24px, 4vw, 40px);
+        top: 10px;
+    }
+    
+    #side-buttons {
+        bottom: 10px;
+    }
+}
+
+/* Specific mobile optimizations */
+@media (max-width: 768px) {
+    #canvas {
+        image-rendering: crisp-edges;
+        image-rendering: pixelated;
+    }
+    
+    #game {
+        touch-action: none;
+        -webkit-overflow-scrolling: none;
     }
 }
