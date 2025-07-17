@@ -1225,6 +1225,10 @@ window.addEventListener('orientationchange', () => {
     // Always use 120 FPS regardless of device
     targetFPS = 120;
     frameTime = 1000 / targetFPS;
+    
+    // Prevent scrolling on mobile after orientation change
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
   }, 100);
 });
 
@@ -1233,6 +1237,30 @@ window.addEventListener('resize', () => {
   // Always use 120 FPS regardless of device
   targetFPS = 120;
   frameTime = 1000 / targetFPS;
+  
+  // Prevent scrolling on mobile after resize
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+});
+
+// Prevent scrolling on game canvas and body
+document.addEventListener('touchmove', (e) => {
+  // Only prevent if we're in game mode (not splash screen)
+  if (startScreen.style.display === "none" && gameOverDiv.style.display === "none" && winGame.style.display === "none") {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+// Prevent scroll on specific elements
+document.addEventListener('DOMContentLoaded', () => {
+  // Prevent scroll on body and html
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+  
+  // Prevent scroll on canvas
+  if (canvas) {
+    canvas.style.touchAction = 'none';
+  }
 });
 
 const generateScoreboardHTML = () => {
