@@ -776,10 +776,10 @@ button {
     }
     
     #canvas {
-        max-height: 95vh;
+        max-height: 98vh !important;
         max-width: 100vw;
         width: 100vw;
-        height: 95vh;
+        height: 98vh !important;
         object-fit: contain;
         /* Mobile performance optimizations */
         transform: translateZ(0);
@@ -885,8 +885,9 @@ button {
     }
     
     #canvas {
-        max-height: 75vh;
+        max-height: 98vh !important;
         max-width: 98vw;
+        height: 98vh !important;
     }
     
     #game {
@@ -937,7 +938,7 @@ button {
     }
     
     #canvas {
-        max-height: 72vh;
+        max-height: 95vh;
         max-width: 96vw;
     }
     
@@ -1031,7 +1032,7 @@ button {
     }
     
     #canvas {
-        max-height: 68vh;
+        max-height: 92vh;
         max-width: 94vw;
     }
     
@@ -1350,13 +1351,14 @@ button {
 /* Portrait mode optimization */
 @media (orientation: portrait) {
     #canvas {
-        max-width: 98vw;
-        max-height: 95vh;
-        margin-top: 2vh;
+        max-width: 98vw !important;
+        max-height: 98vh !important;
+        height: 98vh !important;
+        margin-top: 1vh !important;
     }
     
     #game {
-        height: 98vh;
+        height: 99vh !important;
         overflow: hidden;
     }
 }
