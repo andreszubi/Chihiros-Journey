@@ -22,6 +22,19 @@ let titleText = document.querySelector(".title-text")
 let gameOverDiv = document.querySelector("#game-over");
 let winGame = document.querySelector("#win-game");
 let pauseBtn = document.querySelector("#pause");
+let pauseScreen = document.querySelector("#pause-screen");
+let resumeGameBtn = document.querySelector("#resume-game");
+let pauseMainScreenBtn = document.querySelector("#pause-main-screen");
+let pauseScoreboardDiv = document.querySelector("#pause-scoreboard");
+let sideButtonsContainer = document.querySelector("#side-buttons");
+
+// Debug: Check if buttons are found
+console.log("Button elements found:", {
+  startBtn: !!startBtn,
+  soundBtn: !!soundBtn,
+  muteBtn: !!muteBtn,
+  pauseBtn: !!pauseBtn
+});
 
 
 
@@ -164,7 +177,6 @@ const splashScreen = () => {
   winBtn.style.display = "none";
   
   // Hide the side buttons container on splash screen
-  const sideButtonsContainer = document.querySelector("#side-buttons");
   if (sideButtonsContainer) {
     sideButtonsContainer.style.display = "none";
   }
@@ -444,6 +456,11 @@ const winningGame = () => {
   canvasDiv.style.display = "none";
   titleText.style.display = "none";
   
+  // Hide side buttons
+  if (sideButtonsContainer) {
+    sideButtonsContainer.style.display = "none";
+  }
+  
   // Show win screen
   winGame.style.display = "flex";
   
@@ -458,7 +475,6 @@ const winningGame = () => {
   muteBtn.style.display = "none";
   
   // Hide the side buttons container
-  const sideButtonsContainer = document.querySelector("#side-buttons");
   if (sideButtonsContainer) {
     sideButtonsContainer.style.display = "none";
   }
@@ -509,6 +525,11 @@ const gameOver =  () => {
   canvasDiv.style.display = "none";
   titleText.style.display = "none";
   
+  // Hide side buttons
+  if (sideButtonsContainer) {
+    sideButtonsContainer.style.display = "none";
+  }
+  
   // Show game over screen
   gameOverDiv.style.display = "flex";
   
@@ -523,7 +544,6 @@ const gameOver =  () => {
   muteBtn.style.display = "none";
   
   // Hide the side buttons container
-  const sideButtonsContainer = document.querySelector("#side-buttons");
   if (sideButtonsContainer) {
     sideButtonsContainer.style.display = "none";
   }
@@ -683,12 +703,12 @@ const getOptimalSettings = () => {
   const isTouchDevice = 'ontouchstart' in window;
   const isLandscapeMode = window.innerWidth > window.innerHeight;
   
-  // Base speeds optimized for touch controls
-  let baseMovespeed = isMobile ? 10 : 10; // Increased base speed for mobile
+  // More reasonable base speeds for better control
+  let baseMovespeed = isMobile ? 8 : 10; // Back to more controlled speed
   
-  // Additional speed boost for landscape mode on mobile
+  // Moderate speed boost for landscape mode on mobile
   if (isMobile && isLandscapeMode) {
-    baseMovespeed = 12;
+    baseMovespeed = 9; // Less aggressive boost
   }
   
   return {
@@ -823,6 +843,7 @@ document.addEventListener('keydown', enableAudio);
 document.addEventListener('touchstart', enableAudio);
 
 function startGame() {
+  console.log("Start game function called");
   resetGame();
   
   // Hide all screens except game
@@ -836,7 +857,6 @@ function startGame() {
   canvas.style.display = "block";
   
   // Show game buttons
-  const sideButtonsContainer = document.querySelector("#side-buttons");
   if (sideButtonsContainer) {
     sideButtonsContainer.style.display = "flex";
   }
@@ -870,12 +890,17 @@ function startGame() {
 }
 
 // Button event listeners
-startBtn.addEventListener("click", startGame);
+startBtn.addEventListener("click", () => {
+  console.log("Start button clicked");
+  startGame();
+});
 restartBtn.addEventListener("click", () => {
+  console.log("Restart button clicked");
   resetGame();
   startGame();
 });
 winBtn.addEventListener("click", () => {
+  console.log("Win button clicked");
   resetGame();
   startGame();
 });
@@ -891,15 +916,32 @@ clearScoresBtn.addEventListener("click", () => {
   score.innerHTML = `Your winning time is : ${winningTimer} seconds!<br><br>` + generateScoreboardHTML();
 });
 
+// Pause screen button event listeners
+resumeGameBtn.addEventListener("click", () => {
+  hidePauseScreen();
+});
+
+pauseMainScreenBtn.addEventListener("click", () => {
+  // Reset game state and return to main screen
+  isGamePaused = false;
+  pauseScreen.style.display = "none";
+  resetGame();
+  splashScreen();
+});
+
 gameOverMainBtn.addEventListener("click", () => {
   resetGame();
   splashScreen();
 });
 
 soundBtn.addEventListener("click", () => {
+  console.log("Sound button clicked");
   if (splashSong.paused) {
-    splashSong.play();
-    soundBtn.innerHTML = "Stop Music";
+    splashSong.play().then(() => {
+      soundBtn.innerHTML = "Stop Music";
+    }).catch(error => {
+      console.log("Error playing splash song:", error);
+    });
   } else {
     splashSong.pause();
     soundBtn.innerHTML = "Play Music";
@@ -916,17 +958,48 @@ muteBtn.addEventListener("click", () => {
   }
 });
 
+function showPauseScreen() {
+  isGamePaused = true;
+  gameSong.pause();
+  pauseBtn.innerHTML = "Resume";
+  
+  // Show pause screen as overlay without hiding canvas
+  pauseScreen.style.display = "flex";
+  pauseScreen.style.position = "fixed";
+  pauseScreen.style.top = "0";
+  pauseScreen.style.left = "0";
+  pauseScreen.style.zIndex = "2000";
+  
+  // Show scoreboard only if there are scores
+  if (scoreboard.length > 0) {
+    pauseScoreboardDiv.innerHTML = `
+      <h3>Best Times</h3>
+      ${generateScoreboardHTML()}
+    `;
+  } else {
+    pauseScoreboardDiv.innerHTML = `
+      <h3>Best Times</h3>
+      <p>No scores yet! Complete a game to see your times here.</p>
+    `;
+  }
+}
+
+function hidePauseScreen() {
+  isGamePaused = false;
+  gameSong.play();
+  pauseBtn.innerHTML = "Pause";
+  
+  // Hide pause screen overlay
+  pauseScreen.style.display = "none";
+  
+  gameId = requestAnimationFrame(animate);
+}
+
 pauseBtn.addEventListener("click", () => {
   if (isGamePaused) {
-    isGamePaused = false;
-    gameSong.play();
-    pauseBtn.innerHTML = "Pause";
-    gameId = requestAnimationFrame(animate);
+    hidePauseScreen();
   } else {
-    isGamePaused = true;
-    gameSong.pause();
-    pauseBtn.innerHTML = "Resume";
-    cancelAnimationFrame(gameId);
+    showPauseScreen();
   }
 });
 
@@ -941,6 +1014,18 @@ document.addEventListener("keydown", (e) => {
       break;
     case "ArrowLeft":
       isMovingLeft = true;
+      break;
+    case " ": // Spacebar
+    case "Space":
+      e.preventDefault(); // Prevent page scrolling
+      // Toggle pause only during gameplay
+      if (startScreen.style.display === "none" && gameOverDiv.style.display === "none" && winGame.style.display === "none") {
+        if (isGamePaused) {
+          hidePauseScreen();
+        } else {
+          showPauseScreen();
+        }
+      }
       break;
     case "ArrowRight":
       isMovingRight = true;
@@ -971,25 +1056,25 @@ let touchStartY = 0;
 let currentTouchX = 0;
 let currentTouchY = 0;
 let isDragging = false;
-let touchMoveThreshold = 5; // Much lower threshold for faster response
-let touchSpeedMultiplier = 1.5; // Faster movement for touch
+let touchMoveThreshold = 15; // More reasonable threshold to prevent over-sensitivity
+let touchSpeedMultiplier = 1.1; // Slightly faster but controlled movement for touch
 let lastTouchTime = 0;
 
-// Adaptive touch settings based on device
+// Adaptive touch settings based on device - more balanced
 const isIPhone = /iPhone|iPod/.test(navigator.userAgent);
 const isIPad = /iPad/.test(navigator.userAgent);
 const isIOS = isIPhone || isIPad;
 
-// Optimize settings for different devices
+// More balanced settings for different devices
 if (isIPhone) {
-  touchMoveThreshold = 3; // Even more sensitive for iPhone
-  touchSpeedMultiplier = 1.8; // Faster movement for smaller screens
+  touchMoveThreshold = 12; // Less sensitive for better control
+  touchSpeedMultiplier = 1.15; // Moderate speed boost
 } else if (isIPad) {
-  touchMoveThreshold = 4;
-  touchSpeedMultiplier = 1.6;
+  touchMoveThreshold = 15;
+  touchSpeedMultiplier = 1.1;
 } else if (isIOS) {
-  touchMoveThreshold = 4;
-  touchSpeedMultiplier = 1.7;
+  touchMoveThreshold = 14;
+  touchSpeedMultiplier = 1.12;
 }
 
 // Improved touch start with better iPhone support
@@ -1027,8 +1112,8 @@ canvas.addEventListener("touchmove", (e) => {
   const velocityX = Math.abs(deltaX) / Math.max(timeDelta, 1);
   const velocityY = Math.abs(deltaY) / Math.max(timeDelta, 1);
   
-  // Dynamic threshold based on velocity (faster swipes = more responsive)
-  const dynamicThreshold = Math.max(touchMoveThreshold - (velocityX + velocityY) * 0.1, 1);
+  // More conservative dynamic threshold to prevent over-sensitivity
+  const dynamicThreshold = Math.max(touchMoveThreshold - (velocityX + velocityY) * 0.02, touchMoveThreshold * 0.7);
   
   // Reset all movement flags
   isMovingUp = false;
@@ -1054,8 +1139,8 @@ canvas.addEventListener("touchmove", (e) => {
     }
   }
   
-  // More frequent reference point updates for continuous movement
-  const updateThreshold = isIPhone ? 20 : 30;
+  // Less frequent reference point updates for better control
+  const updateThreshold = isIPhone ? 40 : 50;
   if (Math.abs(deltaX) > updateThreshold || Math.abs(deltaY) > updateThreshold) {
     touchStartX = currentTouchX;
     touchStartY = currentTouchY;

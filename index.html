@@ -22,8 +22,8 @@
       However, there is ramen noodle soups which will will drop and they will take <br>
       Time away from the timer, making you win the game faster. <br>
       <br>
-      <span class="desktop-controls">You may use your arrow keys on your keyboard in order to make Chihiro move up,down, left and right.</span>
-      <span class="mobile-controls">Touch and drag on the game screen to move Chihiro in any direction.</span>
+      <span class="desktop-controls">You may use your arrow keys on your keyboard in order to make Chihiro move up,down, left and right. Press the space bar to pause the game.</span>
+      <span class="mobile-controls">Touch and drag on the game screen to move Chihiro in any direction. Use the pause button to pause the game.</span>
   </strong> 
     <div class="buttons">
       <button id="start-button">Start Game</button>
@@ -36,12 +36,11 @@
 
     <div id="game">
         <canvas id="canvas" width="1400" height="800" ></canvas>
+        <div id="side-buttons">
+            <button class="flexbuttons" id="mute">Mute</button>
+            <button class="flexbuttons" id="pause">Pause</button>
+        </div>
     </div>
-    <div id="side-buttons">
-          
-    <button class="flexbuttons" id="mute">Mute</button>
-    <button class="flexbuttons" id="pause">Pause</button>
-  </div>
 
     <div id="game-over">
       <h1>Oh no! You have been caught by the spirits <br> and they are ready to feast on you!</h1>
@@ -62,6 +61,14 @@
 
     </div>
 
+    <div id="pause-screen" style="display: none;">
+      <h2>Game Paused</h2>
+      <div id="pause-scoreboard"></div>
+      <div class="pause-buttons">
+        <button id="resume-game">Resume Game</button>
+        <button id="pause-main-screen">Main Screen</button>
+      </div>
+    </div>
 
 <script src="index.js"></script>
   </body>
