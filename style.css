@@ -19,6 +19,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    overflow-y: auto;
 }
 
 #game-over {
@@ -1063,25 +1064,30 @@ button {
 /* Landscape orientation support */
 @media (orientation: landscape) and (max-height: 500px) {
     .title-text {
-        font-size: clamp(40px, 8vw, 80px);
-        margin: 10px 0 10px 0;
+        font-size: clamp(30px, 6vw, 60px);
+        margin: 5px 0 5px 0;
     }
     
     #splash-screen {
-        padding-top: 5px;
+        padding-top: 2px;
+        padding-bottom: 10px;
+        overflow-y: auto;
+        justify-content: flex-start;
     }
     
     #splash-screen h2 {
-        font-size: clamp(12px, 3vw, 16px);
-        padding-top: 5px;
-        margin: 5px 0;
+        font-size: clamp(10px, 2.5vw, 14px);
+        padding-top: 2px;
+        margin: 3px 0;
     }
     
     #splash-screen h3 {
-        font-size: clamp(8px, 2vw, 12px);
-        padding: 2px;
-        line-height: 1.0;
-        margin: 2px 0;
+        font-size: clamp(7px, 1.8vw, 11px);
+        padding: 1px;
+        line-height: 0.9;
+        margin: 1px 0;
+        max-width: 95vw;
+        text-align: center;
     }
     
     .buttons {
@@ -1148,12 +1154,15 @@ button {
 /* Specific landscape support for mobile phones */
 @media (orientation: landscape) and (max-width: 932px) and (max-height: 430px) {
     .title-text {
-        font-size: clamp(35px, 6vw, 60px);
-        margin: 5px 0 5px 0;
+        font-size: clamp(25px, 5vw, 45px);
+        margin: 2px 0 2px 0;
     }
     
     #splash-screen {
-        padding-top: 5px;
+        padding-top: 2px;
+        padding-bottom: 5px;
+        overflow-y: auto;
+        justify-content: flex-start;
     }
     
     #pause-screen {
@@ -1188,21 +1197,24 @@ button {
     }
     
     #splash-screen h2 {
-        font-size: clamp(10px, 2.5vw, 14px);
-        padding-top: 2px;
-        margin: 2px 0;
-    }
-    
-    #splash-screen h3 {
-        font-size: clamp(7px, 1.5vw, 10px);
-        padding: 1px;
-        line-height: 0.9;
+        font-size: clamp(8px, 2vw, 12px);
+        padding-top: 1px;
         margin: 1px 0;
     }
     
+    #splash-screen h3 {
+        font-size: clamp(6px, 1.2vw, 9px);
+        padding: 0px;
+        line-height: 0.8;
+        margin: 0px 0;
+        max-width: 98vw;
+        text-align: center;
+    }
+    
     .buttons {
-        padding-top: 5px;
-        gap: 10px;
+        padding-top: 2px;
+        gap: 8px;
+        margin-bottom: 5px;
     }
     
     #start-button, #sound, #mute, #restart, #win-start, #main-screen, #clear-scores, #pause, #game-over-main {
@@ -1264,6 +1276,31 @@ button {
 @media (orientation: landscape) and (max-width: 932px) {
     body {
         touch-action: manipulation; /* Keep consistent with portrait */
+    }
+    
+    #splash-screen {
+        padding-top: 3px !important;
+        padding-bottom: 8px !important;
+        overflow-y: auto !important;
+        justify-content: flex-start !important;
+    }
+    
+    #splash-screen h2 {
+        font-size: clamp(9px, 2.2vw, 13px) !important;
+        margin: 2px 0 !important;
+    }
+    
+    #splash-screen h3 {
+        font-size: clamp(7px, 1.5vw, 10px) !important;
+        line-height: 0.85 !important;
+        margin: 1px 0 !important;
+        max-width: 96vw !important;
+    }
+    
+    .buttons {
+        padding-top: 3px !important;
+        gap: 6px !important;
+        margin-bottom: 8px !important;
     }
     
     #canvas {
@@ -1407,6 +1444,46 @@ button {
 
 /* Very small phones in landscape */
 @media (orientation: landscape) and (max-width: 667px) and (max-height: 375px) {
+    .title-text {
+        font-size: clamp(20px, 4vw, 35px) !important;
+        margin: 1px 0 1px 0 !important;
+    }
+    
+    #splash-screen {
+        padding-top: 1px !important;
+        padding-bottom: 3px !important;
+        overflow-y: auto !important;
+        justify-content: flex-start !important;
+    }
+    
+    #splash-screen h2 {
+        font-size: clamp(7px, 1.8vw, 10px) !important;
+        margin: 1px 0 !important;
+        padding-top: 0 !important;
+    }
+    
+    #splash-screen h3 {
+        font-size: clamp(5px, 1vw, 8px) !important;
+        line-height: 0.7 !important;
+        margin: 0px 0 !important;
+        padding: 0px !important;
+        max-width: 98vw !important;
+    }
+    
+    .buttons {
+        padding-top: 1px !important;
+        gap: 4px !important;
+        margin-bottom: 3px !important;
+    }
+    
+    #start-button, #sound {
+        min-width: 60px !important;
+        min-height: 60px !important;
+        font-size: clamp(7px, 1.5vw, 10px) !important;
+        padding: clamp(5px, 0.8vw, 8px) !important;
+        border-radius: 25px !important;
+    }
+    
     #canvas {
         max-height: 50vh !important;
         max-width: 82vw !important;
@@ -1418,6 +1495,49 @@ button {
     #side-buttons {
         margin-top: 2px !important;
         gap: 6px !important;
+    }
+}
+
+/* Medium landscape phones optimization */
+@media (orientation: landscape) and (max-width: 812px) and (max-height: 430px) {
+    .title-text {
+        font-size: clamp(22px, 4.5vw, 40px) !important;
+        margin: 2px 0 2px 0 !important;
+    }
+    
+    #splash-screen {
+        padding-top: 2px !important;
+        padding-bottom: 5px !important;
+        overflow-y: auto !important;
+        justify-content: flex-start !important;
+    }
+    
+    #splash-screen h2 {
+        font-size: clamp(8px, 2vw, 12px) !important;
+        margin: 1px 0 !important;
+        padding-top: 1px !important;
+    }
+    
+    #splash-screen h3 {
+        font-size: clamp(6px, 1.2vw, 9px) !important;
+        line-height: 0.75 !important;
+        margin: 0px 0 !important;
+        padding: 0px !important;
+        max-width: 97vw !important;
+    }
+    
+    .buttons {
+        padding-top: 2px !important;
+        gap: 5px !important;
+        margin-bottom: 5px !important;
+    }
+    
+    #start-button, #sound {
+        min-width: 70px !important;
+        min-height: 70px !important;
+        font-size: clamp(8px, 1.8vw, 12px) !important;
+        padding: clamp(6px, 1vw, 10px) !important;
+        border-radius: 28px !important;
     }
 }
 
@@ -1514,8 +1634,8 @@ button {
     }
     
     .title-text {
-        font-size: clamp(60px, 10vw, 120px);
-        margin: 15px 0 15px 0;
+        font-size: clamp(40px, 8vw, 80px);
+        margin: 8px 0 8px 0;
     }
     
     #side-buttons {
@@ -1523,19 +1643,22 @@ button {
     }
     
     #splash-screen {
-        padding-top: 20px;
+        padding-top: 5px;
+        padding-bottom: 10px;
+        overflow-y: auto;
     }
     
     .buttons {
-        padding-top: 15px;
+        padding-top: 5px;
+        margin-bottom: 10px;
     }
     
     #start-button, #sound, #mute, #restart, #win-start, #main-screen, #clear-scores, #pause, #game-over-main {
-        min-width: 100px !important;
-        min-height: 100px !important;
-        font-size: clamp(12px, 3vw, 16px) !important;
-        padding: clamp(10px, 1.5vw, 14px) !important;
-        border-radius: 40px !important;
+        min-width: 80px !important;
+        min-height: 80px !important;
+        font-size: clamp(10px, 2.5vw, 14px) !important;
+        padding: clamp(8px, 1.2vw, 12px) !important;
+        border-radius: 30px !important;
     }
     
     #pause-screen {
@@ -1545,10 +1668,10 @@ button {
     }
     
     #resume-game, #pause-main-screen {
-        min-width: 100px !important;
-        min-height: 100px !important;
-        font-size: clamp(12px, 3vw, 16px) !important;
-        padding: clamp(10px, 1.5vw, 14px) !important;
+        min-width: 80px !important;
+        min-height: 80px !important;
+        font-size: clamp(10px, 2.5vw, 14px) !important;
+        padding: clamp(8px, 1.2vw, 12px) !important;
     }
 }
 
