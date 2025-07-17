@@ -783,10 +783,10 @@ button {
     }
     
     #canvas {
-        max-height: 70vh !important;
+        max-height: 60vh !important;
         max-width: 95vw !important;
         width: 95vw !important;
-        height: 70vh !important;
+        height: 60vh !important;
         object-fit: contain;
         margin-top: 2vh;
         /* Mobile performance optimizations */
@@ -798,10 +798,23 @@ button {
     
     #side-buttons {
         position: relative;
-        margin-top: 8px;
-        gap: 12px;
+        margin-top: 1vh;
+        gap: 20px;
         z-index: 1000;
         justify-content: center;
+    }
+    
+    #mute, #pause {
+        min-width: 90px !important;
+        min-height: 90px !important;
+        font-size: clamp(14px, 4vw, 20px) !important;
+        padding: clamp(12px, 3vw, 18px) !important;
+        border-radius: 40px !important;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border: 3px solid #ff69b4 !important;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.3) !important;
+        color: #2c1810 !important;
+        font-weight: bold !important;
     }
 }
 
@@ -1253,10 +1266,21 @@ button {
     }
     
     #canvas {
-        max-height: 55vh !important;
+        max-height: 50vh !important;
         max-width: 95vw !important;
         width: 95vw !important;
-        height: 55vh !important;
+        height: 50vh !important;
+    }
+    
+    #mute, #pause {
+        min-width: 60px !important;
+        min-height: 60px !important;
+        font-size: clamp(9px, 2vw, 14px) !important;
+        padding: clamp(7px, 1.2vw, 10px) !important;
+        border-radius: 25px !important;
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        border: 2px solid #ff69b4 !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
     }
     
     #side-buttons {
@@ -1311,11 +1335,22 @@ button {
     
     #canvas {
         touch-action: none; /* Disable default touch actions on canvas */
-        max-height: 60vh !important;
+        max-height: 55vh !important;
         max-width: 98vw !important;
         width: 98vw !important;
-        height: 60vh !important;
+        height: 55vh !important;
         margin-top: 1vh !important;
+    }
+    
+    #mute, #pause {
+        min-width: 70px !important;
+        min-height: 70px !important;
+        font-size: clamp(10px, 2.5vw, 16px) !important;
+        padding: clamp(8px, 1.5vw, 12px) !important;
+        border-radius: 30px !important;
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        border: 2px solid #ff69b4 !important;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.3) !important;
     }
     
     #pause-screen {
@@ -1406,9 +1441,9 @@ button {
 @media (orientation: landscape) and (max-width: 932px) {
     #canvas {
         width: 98vw !important;
-        height: 60vh !important;
+        height: 55vh !important;
         max-width: 98vw !important;
-        max-height: 60vh !important;
+        max-height: 55vh !important;
         object-fit: contain;
         margin-top: 1vh;
     }
@@ -1427,10 +1462,21 @@ button {
     #side-buttons {
         position: relative;
         flex-direction: row;
-        gap: 8px;
-        margin-top: 2px;
+        gap: 15px;
+        margin-top: 8px;
         justify-content: center;
         z-index: 1000;
+    }
+    
+    #mute, #pause {
+        min-width: 80px !important;
+        min-height: 80px !important;
+        font-size: clamp(12px, 3vw, 18px) !important;
+        padding: clamp(10px, 2vw, 15px) !important;
+        border-radius: 35px !important;
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        border: 3px solid #ff69b4 !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
     }
 }
 
@@ -1500,16 +1546,27 @@ button {
     }
     
     #canvas {
-        max-height: 50vh !important;
+        max-height: 45vh !important;
         max-width: 95vw !important;
         width: 95vw !important;
-        height: 50vh !important;
+        height: 45vh !important;
         margin-top: 0.5vh !important;
     }
     
     #side-buttons {
-        margin-top: 2px !important;
-        gap: 6px !important;
+        margin-top: 5px !important;
+        gap: 8px !important;
+    }
+    
+    #mute, #pause {
+        min-width: 50px !important;
+        min-height: 50px !important;
+        font-size: clamp(8px, 1.8vw, 12px) !important;
+        padding: clamp(6px, 1vw, 9px) !important;
+        border-radius: 22px !important;
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        border: 2px solid #ff69b4 !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
     }
 }
 
@@ -1595,9 +1652,9 @@ button {
 @media (orientation: portrait) {
     #canvas {
         max-width: 95vw !important;
-        max-height: 75vh !important;
+        max-height: 65vh !important;
         width: 95vw !important;
-        height: 75vh !important;
+        height: 65vh !important;
         margin-top: 2vh !important;
         object-fit: contain;
     }
@@ -1629,8 +1686,8 @@ button {
     }
     
     #side-buttons {
-        margin-top: 5px !important;
-        gap: 10px !important;
+        margin-top: 1vh !important;
+        gap: 15px !important;
     }
 }
 
