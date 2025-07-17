@@ -4,11 +4,18 @@ canvas.style.border = "5px solid pink"
 const canvasDiv = document.querySelector("#game");
 const ctx = canvas.getContext("2d");
 
+// Enhanced rendering quality without scaling issues
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = 'high';
+
 
 let startScreen = document.querySelector("#splash-screen");
 let startBtn = document.querySelector("#start-button");
 let restartBtn = document.querySelector("#restart");
 let winBtn = document.querySelector("#win-start");
+let mainScreenBtn = document.querySelector("#main-screen");
+let gameOverMainBtn = document.querySelector("#game-over-main");
+let clearScoresBtn = document.querySelector("#clear-scores");
 let soundBtn = document.querySelector("#sound");
 let muteBtn = document.querySelector("#mute");
 let titleText = document.querySelector(".title-text")
@@ -71,6 +78,7 @@ let gameId = 0;
 let invisibilityTimerLeft = 15;
 let winningTime = ""
 let winningTimer= 0;
+let scoreboard = JSON.parse(localStorage.getItem('chihiroScoreboard')) || [];
 let timeLeft = 60;
 let bgx = 0
 let bgx2 = canvas.width
@@ -207,7 +215,17 @@ const drawChihiro = () => {
 
 const movePlayer = () => {
   const settings = getOptimalSettings();
-  const moveSpeed = settings.moveSpeed;
+  let moveSpeed = settings.moveSpeed;
+  
+  // Boost movement speed for touch controls on mobile
+  const isMobile = window.innerWidth < 768;
+  const isTouchDevice = 'ontouchstart' in window;
+  
+  if (isMobile && isTouchDevice && isDragging) {
+    moveSpeed = moveSpeed * touchSpeedMultiplier; // 1.5x faster for touch
+  }
+  
+  // Enhanced movement with touch optimization
   if (isMovingUp && chihiroY > 230) {
     chihiroY -= moveSpeed;
   }
@@ -337,9 +355,14 @@ const backgroundDraw = () => {
 const drawTime = () => {
   ctx.fillStyle = "black";
   const fontSize = window.innerWidth < 768 ? "16px" : "30px";
-  ctx.font = `${fontSize} sans-serif`;
+  ctx.font = `bold ${fontSize} 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif`;
   const text = window.innerWidth < 768 ? `Time: ${timeLeft}s` : `Time left to win: ${timeLeft}s`;
   const xPos = window.innerWidth < 768 ? 20 : 200;
+  
+  // HD text with white outline for better readability
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 3;
+  ctx.strokeText(text, xPos, 50);
   ctx.fillText(text, xPos, 50);
 }
 
@@ -372,20 +395,30 @@ const invisibilityTimer = () => {
 const drawInvisibility = () => {
   ctx.fillStyle = "black";
   const fontSize = window.innerWidth < 768 ? "16px" : "30px";
-  ctx.font = `${fontSize} sans-serif`;
+  ctx.font = `bold ${fontSize} 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif`;
   const text = window.innerWidth < 768 ? `Invisibility: ${invisibilityTimerLeft}s` : `Invisibility time left: ${invisibilityTimerLeft}s`;
   const xPos = window.innerWidth < 768 ? 20 : 700;
   const yPos = window.innerWidth < 768 ? 80 : 70;
+  
+  // HD text with white outline for better readability
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 3;
+  ctx.strokeText(text, xPos, yPos);
   ctx.fillText(text, xPos, yPos);
 }
 
 const drawGamePaused = () => {
   ctx.fillStyle = "red";
   const fontSize = window.innerWidth < 768 ? "60px" : "150px";
-  ctx.font = `${fontSize} sans-serif`;
+  ctx.font = `bold ${fontSize} 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif`;
   const text = "Game Paused";
   const xPos = window.innerWidth < 768 ? 50 : 260;
   const yPos = window.innerWidth < 768 ? 200 : 400;
+  
+  // HD text with white outline for better readability
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 4;
+  ctx.strokeText(text, xPos, yPos);
   ctx.fillText(text, xPos, yPos);
 }
 
@@ -436,8 +469,29 @@ const winningGame = () => {
     console.log("Win game music autoplay failed, trying again:", error);
     setTimeout(() => winGameSong.play().catch(() => {}), 100);
   });
+  
+  // Add winning time to scoreboard
+  const currentDate = new Date().toLocaleDateString();
+  const currentTime = new Date().toLocaleTimeString();
+  scoreboard.push({
+    time: winningTimer,
+    date: currentDate,
+    timestamp: currentTime
+  });
+  
+  // Sort scoreboard by best time (ascending)
+  scoreboard.sort((a, b) => a.time - b.time);
+  
+  // Keep only top 10 scores
+  if (scoreboard.length > 10) {
+    scoreboard = scoreboard.slice(0, 10);
+  }
+  
+  // Save to localStorage
+  localStorage.setItem('chihiroScoreboard', JSON.stringify(scoreboard));
+  
   let score = document.querySelector("#score")
-  score.innerHTML = `Your winning time is : ${winningTimer} seconds!`
+  score.innerHTML = `Your winning time is : ${winningTimer} seconds!<br><br>` + generateScoreboardHTML();
   cancelAnimationFrame(gameId)
 }
 
@@ -623,12 +677,22 @@ const isLandscape = () => {
   return window.innerHeight < window.innerWidth;
 }
 
-// Adjust game performance based on orientation
+// Adjust game performance based on orientation and touch controls
 const getOptimalSettings = () => {
   const isMobile = window.innerWidth < 768;
+  const isTouchDevice = 'ontouchstart' in window;
+  const isLandscapeMode = window.innerWidth > window.innerHeight;
+  
+  // Base speeds optimized for touch controls
+  let baseMovespeed = isMobile ? 10 : 10; // Increased base speed for mobile
+  
+  // Additional speed boost for landscape mode on mobile
+  if (isMobile && isLandscapeMode) {
+    baseMovespeed = 12;
+  }
   
   return {
-    moveSpeed: isMobile ? 8 : 10,
+    moveSpeed: baseMovespeed,
     bgSpeed: isMobile ? 2 : 3,
     spiritSpawnRate: isMobile ? 100 : 80,
     radishSpawnRate: isMobile ? 120 : 100,
@@ -813,6 +877,22 @@ restartBtn.addEventListener("click", () => {
 });
 winBtn.addEventListener("click", () => {
   resetGame();
+  startGame();
+});
+
+mainScreenBtn.addEventListener("click", () => {
+  resetGame();
+  splashScreen();
+});
+
+clearScoresBtn.addEventListener("click", () => {
+  clearScoreboard();
+  let score = document.querySelector("#score");
+  score.innerHTML = `Your winning time is : ${winningTimer} seconds!<br><br>` + generateScoreboardHTML();
+});
+
+gameOverMainBtn.addEventListener("click", () => {
+  resetGame();
   splashScreen();
 });
 
@@ -885,26 +965,70 @@ document.addEventListener("keyup", (e) => {
   }
 });
 
-// Touch controls for mobile
+// Enhanced touch controls for mobile (iPhone optimized)
 let touchStartX = 0;
 let touchStartY = 0;
+let currentTouchX = 0;
+let currentTouchY = 0;
 let isDragging = false;
+let touchMoveThreshold = 5; // Much lower threshold for faster response
+let touchSpeedMultiplier = 1.5; // Faster movement for touch
+let lastTouchTime = 0;
 
+// Adaptive touch settings based on device
+const isIPhone = /iPhone|iPod/.test(navigator.userAgent);
+const isIPad = /iPad/.test(navigator.userAgent);
+const isIOS = isIPhone || isIPad;
+
+// Optimize settings for different devices
+if (isIPhone) {
+  touchMoveThreshold = 3; // Even more sensitive for iPhone
+  touchSpeedMultiplier = 1.8; // Faster movement for smaller screens
+} else if (isIPad) {
+  touchMoveThreshold = 4;
+  touchSpeedMultiplier = 1.6;
+} else if (isIOS) {
+  touchMoveThreshold = 4;
+  touchSpeedMultiplier = 1.7;
+}
+
+// Improved touch start with better iPhone support
 canvas.addEventListener("touchstart", (e) => {
   e.preventDefault();
+  e.stopPropagation();
   const touch = e.touches[0];
-  touchStartX = touch.clientX;
-  touchStartY = touch.clientY;
+  const rect = canvas.getBoundingClientRect();
+  touchStartX = touch.clientX - rect.left;
+  touchStartY = touch.clientY - rect.top;
+  currentTouchX = touchStartX;
+  currentTouchY = touchStartY;
   isDragging = true;
-});
+  lastTouchTime = performance.now();
+}, { passive: false });
 
+// Enhanced touch move with continuous movement and better sensitivity
 canvas.addEventListener("touchmove", (e) => {
   e.preventDefault();
+  e.stopPropagation();
   if (!isDragging) return;
   
-  const touch = e.touches[0];
-  const deltaX = touch.clientX - touchStartX;
-  const deltaY = touch.clientY - touchStartY;
+  // Support multi-touch for more responsive controls
+  const touch = e.touches[0]; // Primary touch
+  const rect = canvas.getBoundingClientRect();
+  currentTouchX = touch.clientX - rect.left;
+  currentTouchY = touch.clientY - rect.top;
+  
+  const deltaX = currentTouchX - touchStartX;
+  const deltaY = currentTouchY - touchStartY;
+  const currentTime = performance.now();
+  const timeDelta = currentTime - lastTouchTime;
+  
+  // Calculate touch velocity for smoother movement
+  const velocityX = Math.abs(deltaX) / Math.max(timeDelta, 1);
+  const velocityY = Math.abs(deltaY) / Math.max(timeDelta, 1);
+  
+  // Dynamic threshold based on velocity (faster swipes = more responsive)
+  const dynamicThreshold = Math.max(touchMoveThreshold - (velocityX + velocityY) * 0.1, 1);
   
   // Reset all movement flags
   isMovingUp = false;
@@ -912,25 +1036,54 @@ canvas.addEventListener("touchmove", (e) => {
   isMovingLeft = false;
   isMovingRight = false;
   
-  // Set movement based on touch direction
-  if (Math.abs(deltaX) > Math.abs(deltaY)) {
-    if (deltaX > 20) isMovingRight = true;
-    else if (deltaX < -20) isMovingLeft = true;
-  } else if (deltaY > 20) {
-    isMovingDown = true;
-  } else if (deltaY < -20) {
-    isMovingUp = true;
+  // Enhanced movement detection with velocity consideration
+  if (Math.abs(deltaX) > dynamicThreshold) {
+    if (deltaX > dynamicThreshold) {
+      isMovingRight = true;
+    } else if (deltaX < -dynamicThreshold) {
+      isMovingLeft = true;
+    }
   }
-});
+  
+  // Vertical movement (can be simultaneous with horizontal)
+  if (Math.abs(deltaY) > dynamicThreshold) {
+    if (deltaY > dynamicThreshold) {
+      isMovingDown = true;
+    } else if (deltaY < -dynamicThreshold) {
+      isMovingUp = true;
+    }
+  }
+  
+  // More frequent reference point updates for continuous movement
+  const updateThreshold = isIPhone ? 20 : 30;
+  if (Math.abs(deltaX) > updateThreshold || Math.abs(deltaY) > updateThreshold) {
+    touchStartX = currentTouchX;
+    touchStartY = currentTouchY;
+  }
+  
+  lastTouchTime = currentTime;
+}, { passive: false });
 
+// Improved touch end
 canvas.addEventListener("touchend", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  isDragging = false;
+  isMovingUp = false;
+  isMovingDown = false;
+  isMovingLeft = false;
+  isMovingRight = false;
+}, { passive: false });
+
+// Handle touch cancel (when user touches outside canvas)
+canvas.addEventListener("touchcancel", (e) => {
   e.preventDefault();
   isDragging = false;
   isMovingUp = false;
   isMovingDown = false;
   isMovingLeft = false;
   isMovingRight = false;
-});
+}, { passive: false });
 
 // Handle orientation changes
 window.addEventListener('orientationchange', () => {
@@ -947,6 +1100,27 @@ window.addEventListener('resize', () => {
   targetFPS = 120;
   frameTime = 1000 / targetFPS;
 });
+
+const generateScoreboardHTML = () => {
+  if (scoreboard.length === 0) {
+    return '<div style="text-align: center; margin-top: 20px;"><h3>🏆 Best Times</h3><p>No scores yet!</p></div>';
+  }
+  
+  let html = '<div style="text-align: center; margin-top: 20px;"><h3>🏆 Best Times</h3><ol style="text-align: left; display: inline-block;">';
+  
+  scoreboard.forEach((entry, index) => {
+    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅';
+    html += `<li>${medal} ${entry.time}s - ${entry.date} ${entry.timestamp}</li>`;
+  });
+  
+  html += '</ol></div>';
+  return html;
+};
+
+const clearScoreboard = () => {
+  scoreboard = [];
+  localStorage.removeItem('chihiroScoreboard');
+};
 
 window.addEventListener("load", () => {
   splashScreen();

@@ -9,8 +9,8 @@
   </head>
 
   <body >
-    <h1 class="title-text">Chihiro's Journey</h1>
 <div id="splash-screen">
+    <h1 class="title-text">Chihiro's Journey</h1>
     <h2>Instructions</h2>
     <div id="click-to-start" style="display: none; color: yellow; font-size: 18px; margin-bottom: 20px; animation: blink 1s infinite;">
       Click anywhere to start music and begin your journey!
@@ -45,13 +45,20 @@
 
     <div id="game-over">
       <h1>Oh no! You have been caught by the spirits <br> and they are ready to feast on you!</h1>
-      <button id="restart"> Try again?</button>
+      <div class="game-over-buttons">
+        <button id="restart"> Try again?</button>
+        <button id="game-over-main">Main Screen</button>
+      </div>
     </div>
 
     <div id="win-game">
       <h2  id="congrats">Congratulations! You have escaped from the spirits!</h1>
       <h3  id="score"></h3>
-      <button id="win-start">Try again?</button>
+      <div class="win-buttons">
+        <button id="win-start">Try again?</button>
+        <button id="main-screen">Main Screen</button>
+        <button id="clear-scores">Clear Scoreboard</button>
+      </div>
 
     </div>
 

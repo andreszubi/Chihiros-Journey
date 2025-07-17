@@ -18,12 +18,6 @@ If you collide with any of them, then you lose.
 
 Add Scoreboard.
 
-Have multiple songs in the game.
-
-Restart after you lose.
-
-Add a pause game button.
-
 ## Data Structure
 
 Index.js
