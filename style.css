@@ -1121,8 +1121,8 @@ button {
     }
     
     #canvas {
-        max-height: 90vh;
-        max-width: 98vw;
+        max-height: 80vh;
+        max-width: 90vw;
     }
     
     #side-buttons {
@@ -1352,12 +1352,12 @@ button {
 /* Mobile landscape fullscreen canvas */
 @media (orientation: landscape) and (max-width: 932px) {
     #canvas {
-        width: 100vw !important;
-        height: 90vh !important;
-        max-width: 100vw !important;
-        max-height: 90vh !important;
-        object-fit: cover;
-        margin-top: 5vh;
+        width: 95vw !important;
+        height: 70vh !important;
+        max-width: 95vw !important;
+        max-height: 70vh !important;
+        object-fit: contain;
+        margin-top: 2vh;
     }
     
     #game {
@@ -1370,7 +1370,7 @@ button {
         position: relative;
         flex-direction: row;
         gap: 10px;
-        margin-top: 10px;
+        margin-top: 5px;
         justify-content: center;
         z-index: 1000;
     }
@@ -1447,9 +1447,9 @@ button {
 /* Landscape mode optimization */
 @media (orientation: landscape) {
     #canvas {
-        max-width: 90vw;
-        max-height: 80vh;
-        margin: 10vh auto 0 auto;
+        max-width: 85vw;
+        max-height: 75vh;
+        margin: 5vh auto 0 auto;
     }
     
     #game {

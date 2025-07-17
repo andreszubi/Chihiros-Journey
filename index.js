@@ -375,9 +375,18 @@ const drawTime = () => {
   const text = window.innerWidth < 768 ? `Time: ${timeLeft}s` : `Time left to win: ${timeLeft}s`;
   const xPos = window.innerWidth < 768 ? 20 : 200;
   
-  // Adjust Y position based on orientation - move down in landscape
+  // Adjust Y position based on orientation and device type
   const isLandscape = window.innerWidth > window.innerHeight;
-  const yPos = isLandscape ? 90 : 50;
+  const isMobile = window.innerWidth < 768;
+  let yPos;
+  
+  if (isMobile && isLandscape) {
+    yPos = 40; // Higher position in mobile landscape
+  } else if (isLandscape) {
+    yPos = 90; // Desktop landscape
+  } else {
+    yPos = 50; // Portrait mode
+  }
   
   // HD text with white outline for better readability
   ctx.strokeStyle = "white";
@@ -419,9 +428,18 @@ const drawInvisibility = () => {
   const text = window.innerWidth < 768 ? `Invisibility: ${invisibilityTimerLeft}s` : `Invisibility time left: ${invisibilityTimerLeft}s`;
   const xPos = window.innerWidth < 768 ? 20 : 700;
   
-  // Adjust Y position based on orientation - move down in landscape
+  // Adjust Y position based on orientation and device type
   const isLandscape = window.innerWidth > window.innerHeight;
-  const yPos = isLandscape ? 130 : (window.innerWidth < 768 ? 80 : 70);
+  const isMobile = window.innerWidth < 768;
+  let yPos;
+  
+  if (isMobile && isLandscape) {
+    yPos = 70; // Higher position in mobile landscape
+  } else if (isLandscape) {
+    yPos = 130; // Desktop landscape
+  } else {
+    yPos = isMobile ? 80 : 70; // Portrait mode
+  }
   
   // HD text with white outline for better readability
   ctx.strokeStyle = "white";
