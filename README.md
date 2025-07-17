@@ -93,7 +93,7 @@ Create HTML.
 
 Create js.
 
-Create CSS.
+Cthe reate CSS.
 
 Create Background.
 
