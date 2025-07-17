@@ -1351,12 +1351,12 @@ button {
 @media (orientation: portrait) {
     #canvas {
         max-width: 98vw;
-        max-height: 70vh;
-        margin-top: 10vh;
+        max-height: 95vh;
+        margin-top: 2vh;
     }
     
     #game {
-        height: 90vh;
+        height: 98vh;
         overflow: hidden;
     }
 }

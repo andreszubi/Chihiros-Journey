@@ -963,6 +963,11 @@ function showPauseScreen() {
   gameSong.pause();
   pauseBtn.innerHTML = "Resume";
   
+  // Pause all game timers
+  clearInterval(intervalStartTimer);
+  clearInterval(intervalInvisibility);
+  clearInterval(intervalTimeElapsed);
+  
   // Show pause screen as overlay without hiding canvas
   pauseScreen.style.display = "flex";
   pauseScreen.style.position = "fixed";
@@ -988,6 +993,11 @@ function hidePauseScreen() {
   isGamePaused = false;
   gameSong.play();
   pauseBtn.innerHTML = "Pause";
+  
+  // Resume all game timers
+  startTimer();
+  invisibilityTimer();
+  timeElapsed();
   
   // Hide pause screen overlay
   pauseScreen.style.display = "none";
