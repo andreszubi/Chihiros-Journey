@@ -16,7 +16,7 @@ If you collide with any of them, then you lose.
 
 ## Backlog
 
-Add Scoreboard.
+Cleared
 
 ## Data Structure
 
