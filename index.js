@@ -597,6 +597,22 @@ const gameOver =  () => {
     setTimeout(() => gameOverSong.play().catch(() => {}), 100);
   });
   
+  // Show scoreboard on game over screen
+  let gameOverScoreboardDiv = document.querySelector("#game-over-scoreboard");
+  if (gameOverScoreboardDiv) {
+    if (scoreboard.length > 0) {
+      gameOverScoreboardDiv.innerHTML = `
+        <h3>🏆 Best Times</h3>
+        ${generateScoreboardHTML()}
+      `;
+    } else {
+      gameOverScoreboardDiv.innerHTML = `
+        <h3>🏆 Best Times</h3>
+        <p>No completed games yet! Finish a game to see your times here.</p>
+      `;
+    }
+  }
+  
   cancelAnimationFrame(gameId);
 }
 
