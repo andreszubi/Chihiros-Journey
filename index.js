@@ -4,6 +4,10 @@ canvas.style.border = "5px solid pink"
 const canvasDiv = document.querySelector("#game");
 const ctx = canvas.getContext("2d");
 
+// Set canvas dimensions
+canvas.width = 1400;
+canvas.height = 800;
+
 // Enhanced rendering quality without scaling issues
 ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = 'high';
@@ -371,11 +375,15 @@ const drawTime = () => {
   const text = window.innerWidth < 768 ? `Time: ${timeLeft}s` : `Time left to win: ${timeLeft}s`;
   const xPos = window.innerWidth < 768 ? 20 : 200;
   
+  // Adjust Y position based on orientation - move down in landscape
+  const isLandscape = window.innerWidth > window.innerHeight;
+  const yPos = isLandscape ? 90 : 50;
+  
   // HD text with white outline for better readability
   ctx.strokeStyle = "white";
   ctx.lineWidth = 3;
-  ctx.strokeText(text, xPos, 50);
-  ctx.fillText(text, xPos, 50);
+  ctx.strokeText(text, xPos, yPos);
+  ctx.fillText(text, xPos, yPos);
 }
 
 const timeElapsed = () => {
@@ -410,7 +418,10 @@ const drawInvisibility = () => {
   ctx.font = `bold ${fontSize} 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif`;
   const text = window.innerWidth < 768 ? `Invisibility: ${invisibilityTimerLeft}s` : `Invisibility time left: ${invisibilityTimerLeft}s`;
   const xPos = window.innerWidth < 768 ? 20 : 700;
-  const yPos = window.innerWidth < 768 ? 80 : 70;
+  
+  // Adjust Y position based on orientation - move down in landscape
+  const isLandscape = window.innerWidth > window.innerHeight;
+  const yPos = isLandscape ? 130 : (window.innerWidth < 768 ? 80 : 70);
   
   // HD text with white outline for better readability
   ctx.strokeStyle = "white";
