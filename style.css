@@ -1266,21 +1266,28 @@ button {
     }
     
     #canvas {
-        max-height: 50vh !important;
-        max-width: 95vw !important;
-        width: 95vw !important;
-        height: 50vh !important;
+        max-height: 45vh !important;
+        max-width: 100vw !important;
+        width: 100vw !important;
+        height: 45vh !important;
+    }
+    
+    #side-buttons {
+        margin-top: 2vh !important;
+        gap: 20px !important;
     }
     
     #mute, #pause {
-        min-width: 60px !important;
-        min-height: 60px !important;
-        font-size: clamp(9px, 2vw, 14px) !important;
-        padding: clamp(7px, 1.2vw, 10px) !important;
-        border-radius: 25px !important;
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        border: 2px solid #ff69b4 !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+        min-width: 75px !important;
+        min-height: 75px !important;
+        font-size: clamp(10px, 2.5vw, 16px) !important;
+        padding: clamp(8px, 1.8vw, 12px) !important;
+        border-radius: 35px !important;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border: 3px solid #ff69b4 !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4) !important;
+        color: #2c1810 !important;
+        font-weight: bold !important;
     }
     
     #side-buttons {
@@ -1335,22 +1342,29 @@ button {
     
     #canvas {
         touch-action: none; /* Disable default touch actions on canvas */
-        max-height: 55vh !important;
-        max-width: 98vw !important;
-        width: 98vw !important;
-        height: 55vh !important;
-        margin-top: 1vh !important;
+        max-height: 50vh !important;
+        max-width: 100vw !important;
+        width: 100vw !important;
+        height: 50vh !important;
+        margin-top: 0.5vh !important;
+    }
+    
+    #side-buttons {
+        margin-top: 3vh !important;
+        gap: 25px !important;
     }
     
     #mute, #pause {
-        min-width: 70px !important;
-        min-height: 70px !important;
-        font-size: clamp(10px, 2.5vw, 16px) !important;
-        padding: clamp(8px, 1.5vw, 12px) !important;
-        border-radius: 30px !important;
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        border: 2px solid #ff69b4 !important;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.3) !important;
+        min-width: 90px !important;
+        min-height: 90px !important;
+        font-size: clamp(12px, 3vw, 18px) !important;
+        padding: clamp(10px, 2vw, 16px) !important;
+        border-radius: 40px !important;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border: 3px solid #ff69b4 !important;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.4) !important;
+        color: #2c1810 !important;
+        font-weight: bold !important;
     }
     
     #pause-screen {
@@ -1422,9 +1436,9 @@ button {
 /* Better canvas scaling for landscape */
 @media (orientation: landscape) and (max-height: 500px) {
     #canvas {
-        max-height: 70vh;
-        max-width: 98vw;
-        margin-top: 2vh;
+        max-height: 55vh;
+        max-width: 100vw;
+        margin-top: 0.5vh;
     }
 }
 
@@ -1440,12 +1454,12 @@ button {
 /* Mobile landscape fullscreen canvas */
 @media (orientation: landscape) and (max-width: 932px) {
     #canvas {
-        width: 98vw !important;
-        height: 55vh !important;
-        max-width: 98vw !important;
-        max-height: 55vh !important;
+        width: 100vw !important;
+        height: 50vh !important;
+        max-width: 100vw !important;
+        max-height: 50vh !important;
         object-fit: contain;
-        margin-top: 1vh;
+        margin-top: 0.5vh;
     }
     
     #game {
@@ -1462,21 +1476,23 @@ button {
     #side-buttons {
         position: relative;
         flex-direction: row;
-        gap: 15px;
-        margin-top: 8px;
+        gap: 25px;
+        margin-top: 3vh;
         justify-content: center;
         z-index: 1000;
     }
     
     #mute, #pause {
-        min-width: 80px !important;
-        min-height: 80px !important;
-        font-size: clamp(12px, 3vw, 18px) !important;
-        padding: clamp(10px, 2vw, 15px) !important;
-        border-radius: 35px !important;
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        border: 3px solid #ff69b4 !important;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+        min-width: 100px !important;
+        min-height: 100px !important;
+        font-size: clamp(14px, 3.5vw, 20px) !important;
+        padding: clamp(12px, 2.5vw, 18px) !important;
+        border-radius: 45px !important;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border: 4px solid #ff69b4 !important;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.4) !important;
+        color: #2c1810 !important;
+        font-weight: bold !important;
     }
 }
 
@@ -1546,27 +1562,29 @@ button {
     }
     
     #canvas {
-        max-height: 45vh !important;
-        max-width: 95vw !important;
-        width: 95vw !important;
-        height: 45vh !important;
-        margin-top: 0.5vh !important;
+        max-height: 40vh !important;
+        max-width: 100vw !important;
+        width: 100vw !important;
+        height: 40vh !important;
+        margin-top: 0.2vh !important;
     }
     
     #side-buttons {
-        margin-top: 5px !important;
-        gap: 8px !important;
+        margin-top: 2vh !important;
+        gap: 15px !important;
     }
     
     #mute, #pause {
-        min-width: 50px !important;
-        min-height: 50px !important;
-        font-size: clamp(8px, 1.8vw, 12px) !important;
-        padding: clamp(6px, 1vw, 9px) !important;
-        border-radius: 22px !important;
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        border: 2px solid #ff69b4 !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+        min-width: 65px !important;
+        min-height: 65px !important;
+        font-size: clamp(9px, 2.2vw, 14px) !important;
+        padding: clamp(7px, 1.5vw, 11px) !important;
+        border-radius: 30px !important;
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        border: 3px solid #ff69b4 !important;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.4) !important;
+        color: #2c1810 !important;
+        font-weight: bold !important;
     }
 }
 
@@ -1694,9 +1712,9 @@ button {
 /* Landscape mode optimization */
 @media (orientation: landscape) {
     #canvas {
-        max-width: 85vw;
-        max-height: 75vh;
-        margin: 5vh auto 0 auto;
+        max-width: 100vw;
+        max-height: 60vh;
+        margin: 1vh auto 0 auto;
     }
     
     #game {
